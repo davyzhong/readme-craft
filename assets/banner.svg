@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#312e81;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:0.95"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Grid pattern -->
+  <g opacity="0.06" stroke="#a5b4fc" stroke-width="1">
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+    <line x1="150" y1="0" x2="150" y2="630"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="450" y1="0" x2="450" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="750" y1="0" x2="750" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="1050" y1="0" x2="1050" y2="630"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="80" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="48" font-weight="700" fill="#a5b4fc">📜 README 锻造工坊</text>
+  <!-- BEGIN GENERATED:banner-stats -->
+<text x="600" y="118" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="400" fill="#c7d2fe">19 条铁律 · 13 条反模式 · 量化评分 · craft-readme Skill</text>
+<!-- END GENERATED:banner-stats -->
+
+  <!-- Three-axis / Five-axis card -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="170" width="1040" height="280" rx="12" fill="url(#card)" stroke="#4338ca" stroke-width="1.5"/>
+  </g>
+  <text x="600" y="205" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="18" font-weight="600" fill="#e0e7ff">五条评估轴 × 19 条铁律</text>
+
+  <!-- 5 axis pills -->
+  <g font-family="-apple-system, sans-serif" font-size="15" font-weight="500">
+    <rect x="100" y="240" width="180" height="42" rx="21" fill="#312e81" stroke="#6366f1"/>
+    <text x="190" y="267" text-anchor="middle" fill="#e0e7ff">🏗 结构轴 (T4/T5/T12/T19)</text>
+
+    <rect x="300" y="240" width="180" height="42" rx="21" fill="#312e81" stroke="#6366f1"/>
+    <text x="390" y="267" text-anchor="middle" fill="#e0e7ff">📝 内容轴 (T2/T3/T7/T9/T10/T11/T17)</text>
+
+    <rect x="500" y="240" width="180" height="42" rx="21" fill="#312e81" stroke="#6366f1"/>
+    <text x="590" y="267" text-anchor="middle" fill="#e0e7ff">🎨 视觉轴 (T1/T6/T8/T18)</text>
+
+    <rect x="700" y="240" width="180" height="42" rx="21" fill="#312e81" stroke="#6366f1"/>
+    <text x="790" y="267" text-anchor="middle" fill="#e0e7ff">🤖 AI 轴 (T15)</text>
+
+    <rect x="900" y="240" width="180" height="42" rx="21" fill="#312e81" stroke="#6366f1"/>
+    <text x="990" y="267" text-anchor="middle" fill="#e0e7ff">🌍 包容轴 (T13/T14/T16)</text>
+  </g>
+
+  <!-- Bottom: From chaos to order -->
+  <g font-family="-apple-system, sans-serif">
+    <text x="180" y="345" text-anchor="middle" font-size="14" font-weight="600" fill="#fca5a5">❌ 混乱的 README</text>
+    <text x="180" y="370" text-anchor="middle" font-size="12" fill="#fca5a5">54 行 · 0 图 · 0 安装 · 0 demo</text>
+
+    <!-- Arrow -->
+    <path d="M 280 350 L 920 350" stroke="#a5b4fc" stroke-width="2" stroke-dasharray="8,4" fill="none"/>
+    <polygon points="920,344 940,350 920,356" fill="#a5b4fc"/>
+    <text x="600" y="338" text-anchor="middle" font-size="14" font-weight="500" fill="#a5b4fc">readme-craft 方法论</text>
+
+    <text x="1020" y="345" text-anchor="middle" font-size="14" font-weight="600" fill="#86efac">✓ 高分 README</text>
+    <text x="1020" y="370" text-anchor="middle" font-size="12" fill="#86efac">hero · 5 路 · Quickstart · 截图矩阵</text>
+
+    <text x="1020" y="390" text-anchor="middle" font-size="12" fill="#86efac">架构图 · 对照表 · i18n · a11y</text>
+  </g>
+
+  <!-- Bottom row: deliverables -->
+  <g font-family="-apple-system, sans-serif" font-size="13" fill="#c7d2fe">
+    <text x="80" y="495">📦 4 套模板：minimal · standard · rich · cn-academic</text>
+    <text x="80" y="520">🤖 craft-readme Skill（供 Agent 调用）</text>
+    <text x="80" y="545">📸 改造示例：MouthType 素材 54→230 行（fixture）</text>
+    <text x="80" y="570">🏆 同行对照：readme.so · common-readme · readme-md-generator · Art of README</text>
+
+    <text x="1120" y="495" text-anchor="end" fill="#fbbf24">⭐ MIT License</text>
+    <text x="1120" y="520" text-anchor="end" fill="#fbbf24">🏆 Built by Davy</text>
+    <text x="1120" y="545" text-anchor="end" fill="#fbbf24">🌟 AI Native 知识工程</text>
+    <text x="1120" y="570" text-anchor="end" fill="#fbbf24">📅 v2.3.1 · 2026 Q3</text>
+  </g>
+
+  <!-- Footer bar -->
+  <rect x="0" y="610" width="1200" height="20" fill="#0f172a"/>
+  <text x="600" y="624" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="11" fill="#64748b">手绘 banner · 演示截图待 v3.0 截图自动化示例补齐</text>
+</svg>

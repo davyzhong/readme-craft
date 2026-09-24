@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS metadata
+Thumbs.db
+
+# Python (案例脚本可能用到)
+__pycache__/
+*.pyc
+.venv/
+
+# Node (案例脚本可能用到)
+node_modules/
+
+# Readme-craft 输出（运行后产生的产物）
+output/
+*.bak
+
+# Local environment overrides
+.env
+.env.local
+# 构建产物（pnpm readme-craft pack-skill）
+dist/

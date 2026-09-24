@@ -1,0 +1,61 @@
+# readme-craft 本仓 CI（M2-10，经 owner 批准）
+# 工具链版本双锁定：Node 由 .node-version、pnpm 由 package.json packageManager 字段提供，此处不写第二份。
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Frozen install
+        run: pnpm install --frozen-lockfile
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Validate repo consistency
+        run: pnpm validate
+
+      - name: Generated blocks are fresh
+        run: pnpm check:generated
+
+      - name: Golden fixture passes (exit 0)
+        run: pnpm readme-craft check tests/fixtures/cli-golden --type cli
+
+      - name: Negative fixture fails as contracted (exit 1)
+        run: |
+          set +e
+          pnpm readme-craft check tests/fixtures/cli --type cli
+          test $? -eq 1
+
+      - name: Skill package builds deterministically
+        run: pnpm readme-craft pack-skill
+
+      # 以下三项为审批门 2 批准的扩展（2026-09-23）：CLI bundle 与 Web 产物构建、Web/CLI 一致性测试
+      - name: CLI bundle builds deterministically
+        run: pnpm run build
+
+      - name: Web tests (CLI/Web consistency)
+        run: pnpm web:test
+
+      - name: Web bundle builds
+        run: pnpm web:build

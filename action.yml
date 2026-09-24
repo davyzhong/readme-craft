@@ -1,0 +1,37 @@
+# readme-craft 只读检查 Action（M3-1；发布属独立审批门）
+# 契约：无 PR 回写、无 token 需求、不自动 commit；权限由调用方 workflow 声明 contents: read。
+name: readme-craft check
+description: 对项目 README 执行确定性规则检查，输出已核验得分与未核验项；只读，不回写
+author: davyzhong
+
+inputs:
+  path:
+    description: 目标项目路径
+    required: false
+    default: "."
+  type:
+    description: 项目类型（cli/library/desktop/web-app/service/knowledge-base；留空自动探测）
+    required: false
+  review:
+    description: Agent 评审 YAML 路径（可选，合并后解锁总分）
+    required: false
+  strict:
+    description: partial 是否计失败
+    required: false
+    default: "false"
+
+outputs:
+  verified-score:
+    description: 已核验得分
+  verified-maximum:
+    description: 适用满分
+  unverified-count:
+    description: 未核验项数
+  report-path:
+    description: JSON 报告文件路径
+  exit-code:
+    description: check 退出码（0 成功 / 1 存在 fail / 2 输入或环境错误）
+
+runs:
+  using: node24
+  main: scripts/action-entry.mjs

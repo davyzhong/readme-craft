@@ -1,0 +1,360 @@
+# readme-craft 规则规范（唯一事实源）
+# 版本与 SKILL frontmatter / package.json 三处一致（P9），由 validate 强制校验。
+# 内部 ID 零填充 T01..T19 / A01..A13；散文文档保持 T1..T19 / A1..A13，映射由 generate 维护。
+version: 3.0.0-alpha.0
+
+rules:
+  - id: T01
+    title: 视觉锤
+    axis: visual
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 首屏用中央 logo + tagline + hero 视觉建立辨识度
+    scores:
+      "0": 首屏纯文字，无任何视觉元素
+      "1": 有标题装饰（如 emoji），但无 hero 图
+      "2": 有 hero 视觉但与产品实际界面无关或严重过时
+      "3": 首屏有居中的 logo/tagline 和一张真实的 hero 视觉
+      "4": hero 视觉为真实截图/录屏或架构图，且与当前版本一致
+      "5": 满足 4 分，且提供浅色/深色适配或动态 SVG banner 等进阶形态
+    evidence: [hero-visual, logo-tagline]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T02
+    title: 三秒价值主张
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 用一两句话讲清做什么、给谁用、为什么选你
+    scores:
+      "0": 找不到任何项目描述
+      "1": 有描述但只讲做什么，看不出给谁用或优势
+      "2": 讲清做什么+给谁用，但无差异化优势
+      "3": 一句话覆盖做什么+给谁用+独特优势
+      "4": 满足 3 分，且第二句给出可信的选型理由
+      "5": 满足 4 分，且陌生人 30 秒测试可复述项目定位
+    evidence: [value-proposition]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T03
+    title: Badge 矩阵
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 用 4-7 个标准化 badge 建立可信度
+    scores:
+      "0": 没有任何 badge
+      "1": 1-3 个 badge，或超过 10 个失焦
+      "2": 4-7 个 badge 但非 shields.io 标准格式
+      "3": 4-7 个 shields.io badge，含许可证与版本/状态
+      "4": 满足 3 分，且含 CI 状态与下载量/star 规模信号
+      "5": 满足 4 分，且含 security badge 与文档入口
+    evidence: [badge-count, shields-io-format]
+    evaluator: deterministic
+    browser_safe: true
+    thresholds: { partial: 2, pass: 3 }
+
+  - id: T04
+    title: 安装多路齐发
+    axis: structure
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 让目标用户找到真实可用的安装路径，覆盖正式支持的平台
+    scores:
+      "0": 没有安装说明
+      "1": 有描述但没有可执行命令
+      "2": 有主平台命令，但未提供验证证据
+      "3": 主平台有经过验证的安装命令，每路单行可复制
+      "4": 正式支持的平台均有命令，少量验证证据缺失
+      "5": 所有正式支持的平台都有经过验证的安装路径
+    evidence: [executable-command, supported-platforms]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 3 }
+
+  - id: T05
+    title: 30 秒试用 + 60 秒 Quickstart
+    axis: structure
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 从零到 demo 不超过 60 秒，Web/GUI 项目提供零部署试用入口
+    scores:
+      "0": 没有 Quickstart
+      "1": 有步骤但不可复制或缺真实输出
+      "2": 3-5 个编号步骤可复制，但无输出证据
+      "3": Quickstart 配真实终端/GUI 输出截图，60 秒可跑通
+      "4": 满足 3 分，且 Web/GUI 项目顶部有 Deploy/试用按钮（CLI/库豁免该子项）
+      "5": 满足 4 分，且经陌生人计时实测 60 秒内跑通
+    evidence: [quickstart-steps, real-output-screenshot]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T06
+    title: 视觉矩阵
+    axis: visual
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 3 张截图一组 + 复杂 GUI 项目 1 段视频，展示产品真实面貌；非 GUI 类型（cli/library/service/knowledge-base）无图像/视频引用时计 N/A（条件项）
+    scores:
+      "0": 全文 0 张图
+      "1": 只有 1 张孤立图或散落无节奏
+      "2": 有截图组但缺 alt 或尺寸不统一
+      "3": 3 张截图成组、width≈270、可点击放大、带具体 alt
+      "4": 满足 3 分，且复杂 GUI 项目含 ≤60 秒演示视频（其他类型可豁免视频子项）
+      "5": 满足 4 分，且截图均由自动化脚本产出（衔接 T18）
+    evidence: [screenshot-group, image-alt]
+    evaluator: deterministic
+    browser_safe: false
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T07
+    title: 卖点编号清单
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 4-6 条「粗体关键词 + 一行量化收益」，把做了什么翻译成用户能得到什么
+    scores:
+      "0": 没有卖点清单
+      "1": ✅ 列表堆砌（做了什么），无用户收益视角
+      "2": 有编号卖点但全是空形容词（快/简单/强大）
+      "3": 4-6 条卖点，每条粗体关键词 + 具体收益
+      "4": 满足 3 分，且收益可量化或有据可查
+      "5": 满足 4 分，且每条收益可溯源到证据（benchmark/文档/案例）
+    evidence: [numbered-selling-points, quantified-benefit]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T08
+    title: Feature 分组 + Ecosystem
+    axis: visual
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 功能按维度分组；多模块项目说明生态位置
+    scores:
+      "0": 功能全部堆在一个无结构列表
+      "1": 有分组但维度混乱或组数失当（<2 或 >6）
+      "2": 按维度分 3-5 组，但条目描述不一致
+      "3": 3-5 组、每组二级标题、条目统一为 emoji+粗体词+一句话
+      "4": 满足 3 分，且多模块项目有 Ecosystem 章节（单模块项目豁免 T8b）
+      "5": 满足 4 分，且生态条目均链接到真实可访问的兄弟项目
+    evidence: [feature-groups, ecosystem-section]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T09
+    title: 架构图
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 复杂项目用一张图说清组件、关系与数据流；简单 CLI 可豁免
+    scores:
+      "0": 复杂项目完全没有架构图（简单 CLI 判 N/A）
+      "1": 用纯文字段落描述组件关系
+      "2": 有图但缺组件、关系或数据流三者之一
+      "3": 一张图覆盖组件+关系+数据流
+      "4": 满足 3 分，且使用 mermaid 等可版本控制的格式
+      "5": 满足 4 分，且图与代码结构同步维护（有更新机制说明）
+    evidence: [architecture-diagram]
+    evaluator: deterministic
+    browser_safe: true
+    thresholds: { partial: 2, pass: 3 }
+
+  - id: T10
+    title: 对照表
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 用表格回答为什么用我：同类对比 / 平台支持 / 多语言支持至少其一
+    scores:
+      "0": 没有任何表格
+      "1": 有表格但与差异化无关（纯装饰）
+      "2": 有同类/平台/语言对照表，但维度过少
+      "3": 至少一个言之有物的对照表
+      "4": 满足 3 分，且同类对比有理有据不贬低对手
+      "5": 满足 4 分，且对照维度覆盖读者主要决策因素
+    evidence: [comparison-table]
+    evaluator: deterministic
+    browser_safe: true
+    thresholds: { partial: 1, pass: 3 }
+
+  - id: T11
+    title: 引用 / 背书
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 企业 logo / 用户 quote / 学术引用至少其一，且每条可溯源；早期项目可标建设中
+    scores:
+      "0": 伪造用户、客户、指标或引用（直接 fail，不适用豁免）
+      "1": 无任何引用，也未标注建设中（早期项目可判 N/A 并注明）
+      "2": 有引用但不可溯源
+      "3": 至少一条引用可溯源到原始页面，logo 有授权说明
+      "4": 满足 3 分，且形式多样（quote + logo 或学术 cite）
+      "5": 满足 4 分，且引用定期核验有效
+    evidence: [traceable-reference]
+    evaluator: agent-reviewed
+    thresholds: { partial: 1, pass: 3 }
+
+  - id: T12
+    title: 收尾五件套
+    axis: structure
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: License + Contributing + CoC + Security + Sponsors/Acknowledgements
+    scores:
+      "0": 五件套全缺
+      "1": 只有 License
+      "2": License + Contributing，缺 CoC / Security
+      "3": License + Contributing + CoC + Security 齐备且有链接
+      "4": 满足 3 分，且有 Sponsors/Acknowledgements
+      "5": 满足 4 分，且有 Roadmap 或 Community Stats 等加分项
+    evidence: [governance-files, readme-links]
+    evaluator: deterministic
+    browser_safe: false
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T13
+    title: i18n 规范
+    axis: inclusive
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 多语言文件用 README.<BCP47>.md 命名，并明确支持策略；无多语言信号时是否存在海外用户属外部事实，计 unverified 而非 0 分（条件项）
+    scores:
+      "0": 有海外用户但只有单一语言且未说明策略（触发 A09）
+      "1": 有多语言内容但命名不符合 BCP 47
+      "2": 命名合规但无支持策略说明
+      "3": README.<BCP47>.md 命名合规 + 明确支持策略（含「仅单语言，欢迎 PR」情形）
+      "4": 满足 3 分，且语言切换集中在顶部一处
+      "5": 满足 4 分，且无翻译列阵（国旗链接 ≤5 或目录分流）
+    evidence: [bcp47-files, support-policy]
+    evaluator: deterministic
+    browser_safe: false
+    thresholds: { partial: 1, pass: 3 }
+
+  - id: T14
+    title: 包容性语言
+    axis: inclusive
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: they 单数、多元示例人名、去性别默认、第二人称
+    scores:
+      "0": 存在明显性别/文化偏见用词
+      "1": 默认指代用 he/she，示例人名单一文化背景
+      "2": 部分修正但仍有 the user / manpower 类残留
+      "3": they 单数 + 多元人名 + 去性别默认词
+      "4": 满足 3 分，且第二人称统一用 you
+      "5": 满足 4 分，且经包容性语言工具或 LLM 复查通过
+    evidence: [inclusive-language-review]
+    evaluator: agent-reviewed
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T15
+    title: LLM 友好元数据
+    axis: ai
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 语义标题、清晰章节、真实链接优先；frontmatter 与 llms.txt 为可选增强（D-4 冻结）
+    scores:
+      "0": 无语义结构（章节名为 Section 1 类占位）
+      "1": 有章节但标题不语义化，命令示例用截图而非代码块
+      "2": 关键章节用语义标题（Installation/Quickstart/Usage 等）
+      "3": 满足 2 分，且命令示例全部为可复制代码块、链接真实有效
+      "4": 满足 3 分，且提供可选的结构化元数据（frontmatter 或 llms.txt 其一）
+      "5": 满足 4 分，且 LLM 五问测试（做什么/怎么装/怎么跑/差异/许可证）全部答对
+    evidence: [semantic-headings, llm-five-questions]
+    evaluator: deterministic
+    browser_safe: false
+    thresholds: { partial: 2, pass: 3 }
+
+  - id: T16
+    title: 无障碍 a11y
+    axis: inclusive
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 图像 alt 具体、表格带 header、不依赖颜色单一传达信息
+    scores:
+      "0": 图像无 alt 或全是 image/screenshot 占位
+      "1": 部分图像有 alt 但不具体
+      "2": 图像 alt 具体，但表格缺 header 行
+      "3": 全部图像 alt 具体 + 全部表格带 header
+      "4": 满足 3 分，且不依赖颜色单一传达信息
+      "5": 满足 4 分，且经 pa11y / axe-core 扫描通过
+    evidence: [alt-text, table-headers]
+    evaluator: deterministic
+    browser_safe: true
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T17
+    title: 默认语言策略
+    axis: content
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: 默认语言按主要用户群体反推，不照搬必须英文的惯例
+    scores:
+      "0": 默认语言与用户群体明显错位（触发 A11）
+      "1": 默认语言合理但判断依据未说明
+      "2": 有判断依据（作者语言/Issues 语言/团队母语）但语言切换散落全文
+      "3": 默认语言匹配用户群体 + 切换链接集中顶部一处
+      "4": 满足 3 分，且另一语言版本内容同步维护
+      "5": 满足 4 分，且策略在 README 中显式说明
+    evidence: [default-language-rationale]
+    evaluator: agent-reviewed
+    thresholds: { partial: 1, pass: 3 }
+
+  - id: T18
+    title: 截图自动化
+    axis: visual
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: README 截图必须由脚本产生（Playwright/VHS 等）+ CI 自动化；无截图项目可判 N/A
+    scores:
+      "0": 截图手工维护（文件名带日期/与代码不同步）
+      "1": 有截图脚本但无 CI 触发
+      "2": 脚本 + CI 存在，但文件名/视口不规范
+      "3": 脚本产生 + 语义文件名 + 固定视口 + CI 触发（push/定时/手动）
+      "4": 满足 3 分，且截图覆盖 README 视觉矩阵全部场景
+      "5": 满足 4 分，且失败时 CI 非零退出并可诊断
+    evidence: [screenshot-workflow, semantic-filenames]
+    evaluator: deterministic
+    browser_safe: false
+    thresholds: { partial: 2, pass: 4 }
+
+  - id: T19
+    title: CI 可复现与可诊断
+    axis: structure
+    applies_to: [cli, library, desktop, web-app, service, knowledge-base]
+    intent: lockfile 入库 + frozen install + 版本固定 + 链接检查；无 CI 的项目可判 N/A
+    scores:
+      "0": lockfile 被 .gitignore 排除或 CI 绕开 frozen install（触发 A13）
+      "1": lockfile 入库但 CI 未用 frozen install
+      "2": frozen install 就位，但运行时/包管理器版本未固定
+      "3": lockfile + frozen install + packageManager/Node 版本固定
+      "4": 满足 3 分，且 README 相对链接与双语文件存在性检查进 CI
+      "5": 满足 4 分，且失败信息指明缺失文件与修复动作（可诊断）
+    evidence: [lockfile-committed, frozen-install, pinned-versions]
+    evaluator: deterministic
+    browser_safe: false
+    thresholds: { partial: 2, pass: 4 }
+
+antiPatterns:
+  - id: A01
+    title: 零视觉
+    maps_to: [T01, T06]
+  - id: A02
+    title: 内部 jargon 主导
+    maps_to: [T02]
+  - id: A03
+    title: Checklist 堆砌
+    maps_to: [T07]
+  - id: A04
+    title: 安装埋在第 5 屏
+    maps_to: [T04]
+  - id: A05
+    title: 没 demo 截图
+    maps_to: [T06, T05]
+  - id: A06
+    title: 翻译列阵
+    maps_to: [T13]
+  - id: A07
+    title: 没"为什么用我"
+    maps_to: [T10]
+  - id: A08
+    title: 没版本/状态
+    maps_to: [T03]
+  - id: A09
+    title: 零 i18n 但有海外用户
+    maps_to: [T13]
+  - id: A10
+    title: emoji 满屏无实质
+    maps_to: [T07, T14]
+  - id: A11
+    title: 默认语言错位
+    maps_to: [T17]
+  - id: A12
+    title: 截图手工维护
+    maps_to: [T18]
+  - id: A13
+    title: CI 不可复现
+    maps_to: [T19]

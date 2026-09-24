@@ -1,0 +1,28 @@
+# T19 配套配方：README 链接检查 job
+#
+# 用法：把下面的 job 整段复制进目标项目任意一个 GitHub Actions workflow 文件
+# （与既有 job 同级，2 空格缩进）。它是独立 job，不依赖也不影响既有步骤。
+# 来源实战：2026-09-23 兄弟项目批量修复战役（docs/audits/2026-09-23-sibling-readme-audit.md §七）。
+#
+# readme-link-check:
+#   name: README 链接检查 (readme-craft T19)
+#   runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: 检查 README 相对链接
+#         run: |
+#           set -u
+#           status=0
+#           links=$(awk '/^```/{f=!f;next} !f' README.md | grep -oE '\]\([^)# ]+\)' | sed -e 's/^](//' -e 's/)$//' | grep -vE '^(https?:|mailto:|#|img\.shields)' | grep -E '^(\./|\.\./|[A-Za-z0-9])' | grep -E '\.(md|png|jpe?g|svg|gif|webp|json|ya?ml|txt)$' | sort -u)
+#           for f in $links; do
+#             target="${f%%#*}"
+#             [ -z "$target" ] && continue
+#             [ -e "$target" ] || { echo "BROKEN: $target"; status=1; }
+#           done
+#           exit $status
+#
+# 设计要点：
+# - 纯 bash + awk，零外部依赖，任何 runner 直接可用
+# - awk 先剥离 ``` 围栏，避免代码块里的示例链接造成误报
+# - 只检查相对路径的文档/资产链接（https/mailto/锚点/shields badge 全部跳过）
+# - 检查目标存在性（锚点内部分片 `#...` 被剥离）；失败输出 BROKEN 列表并以非零退出

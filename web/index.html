@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 纯本地页面：脚本与样式仅允许同源/内联，不发出任何网络请求 -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; connect-src 'none'"
+    />
+    <title>readme-craft · 本地 README 检查</title>
+  </head>
+  <body>
+    <main id="app">
+      <header>
+        <h1>readme-craft 本地检查</h1>
+        <p class="privacy">
+          🔒 本页面完全在你的浏览器中运行：README 内容不会被上传、存储或发送到任何服务器。
+        </p>
+      </header>
+
+      <section class="input-panel">
+        <fieldset id="type-picker">
+          <legend>项目类型（显式选择，至少一项）</legend>
+        </fieldset>
+        <label for="readme-input">粘贴 README 内容（Markdown）</label>
+        <textarea
+          id="readme-input"
+          rows="14"
+          placeholder="# 你的项目&#10;&#10;把 README.md 全文粘贴到这里……"
+        ></textarea>
+        <button id="run" type="button">运行检查</button>
+      </section>
+
+      <section id="results" aria-live="polite"></section>
+
+      <footer>
+        <p>
+          浏览器可核验的规则是「仅依赖 Markdown 字符串」的确定性子集；
+          依赖文件系统、远程链接或人工评审的规则在此一律显示为「未核验」，
+          完整检查请使用 CLI（<code>readme-craft check</code>）或 craft-readme Skill。
+        </p>
+        <p id="spec-version"></p>
+      </footer>
+    </main>
+    <script src="./dist/app.js"></script>
+  </body>
+</html>

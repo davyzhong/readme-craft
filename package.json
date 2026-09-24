@@ -1,0 +1,66 @@
+{
+  "name": "readme-craft",
+  "version": "3.0.0-alpha.0",
+  "description": "README methodology toolchain: 19 iron laws + 13 anti-patterns + deterministic rule engine + CLI. Check any project's README in seconds.",
+  "type": "module",
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "bin": {
+    "readme-craft": "./dist/readme-craft.mjs"
+  },
+  "files": [
+    "dist/readme-craft.mjs",
+    "rules.yaml",
+    "rules.schema.json",
+    "skill/SKILL.md",
+    "METHODOLOGY.md",
+    "checklist.md",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "readme",
+    "documentation",
+    "linting",
+    "quality",
+    "open-source",
+    "methodology",
+    "ai-agent",
+    "claude",
+    "skill"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davyzhong/readme-craft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davyzhong/readme-craft/issues"
+  },
+  "homepage": "https://github.com/davyzhong/readme-craft#readme",
+  "license": "MIT",
+  "scripts": {
+    "readme-craft": "node scripts/readme-craft.ts",
+    "generate": "node scripts/readme-craft.ts generate",
+    "validate": "node scripts/readme-craft.ts validate",
+    "check:generated": "node scripts/readme-craft.ts generate --check",
+    "build": "node scripts/build.ts",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "web:build": "node scripts/web-build.ts",
+    "web:test": "node --test \"web/tests/**/*.test.ts\"",
+    "web:smoke": "node --test \"web/tests/smoke.test.ts\"",
+    "web:preview": "node scripts/web-preview.ts",
+    "prepublishOnly": "node scripts/build.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "ajv": "^8.20.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.63.0",
+    "typescript": "~5.9.3",
+    "yaml": "^2.9.1"
+  }
+}
