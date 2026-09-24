@@ -20,7 +20,8 @@
 ### npx 直接用（零安装）
 
 ```bash
-npx readme-craft check .          # 检查当前项目的 README
+npx readme-craft check .              # npm 发布后使用（最简）
+npx github:davyzhong/readme-craft check .  # 现在就能用（通过 GitHub）
 npx readme-craft check . --type cli  # 指定项目类型
 ```
 
