@@ -30,3 +30,4 @@ output/
 .env.local
 # 构建产物（pnpm readme-craft pack-skill）
 dist/
+.local/
