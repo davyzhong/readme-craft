@@ -605,7 +605,7 @@ v3 起，评分以仓库 `rules.yaml` 为唯一事实源：每条铁律按 0-5 �
 - **v1（2026-09-21）** — 12 铁律 + 8 反模式 + 4 模板 + craft-readme Skill + VoiceType 示例
 - **v2 → v2.3（2026-09-21）** — 铁律 16→19（+i18n / 包容性 / LLM / a11y / 默认语言 / 截图自动化 / CI），反模式 10→13，量表 80→95
 - **v2.3.1（2026-09-22）** — 治理修复：版本口径统一、T19 重写为「CI 可复现与可诊断」、治理文件齐备、案例诚实化、评分展示与营销数字解耦
-- **v3.0（计划）** — `rules.yaml` 单一事实源 + `validate` / `generate` / `check` CLI + Skill 打包；对外评分改为归一化百分制 + N/A；alpha（核心）→ beta（Action + 截图示例）→ RC（本地 Web 评分页）。详见 [`docs/superpowers/plans/2026-09-22-optimization-master-plan.md`](docs/superpowers/plans/2026-09-22-optimization-master-plan.md)
+- **v3.0（计划）** — `rules.yaml` 单一事实源 + `validate` / `generate` / `check` CLI + Skill 打包；对外评分改为归一化百分制 + N/A；alpha（核心）→ beta（Action + 截图示例）→ RC（本地 Web 评分页）。（执行方案见内部文档）
 
 ---
 

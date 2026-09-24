@@ -16,7 +16,7 @@ export interface Issue {
   message: string;
 }
 
-const SKIP_DIRS = new Set(["node_modules", ".git", "dist"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".local"]);
 
 function walkMd(dir: string, root: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {

@@ -15655,7 +15655,7 @@ var init_validate = __esm({
     init_types();
     init_spec();
     init_generate();
-    SKIP_DIRS = /* @__PURE__ */ new Set(["node_modules", ".git", "dist"]);
+    SKIP_DIRS = /* @__PURE__ */ new Set(["node_modules", ".git", "dist", ".local"]);
     DRIFT_PATTERN = /16 条铁律|17 条铁律|18 条铁律|80 分|85 分|90 分/;
     HISTORY_LINE = /历史|演进/;
     HISTORY_HEADING = /历史|演进|升级摘要/;
