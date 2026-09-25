@@ -68,6 +68,7 @@ __export(skill_exports, {
 import { createHash } from "node:crypto";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -127,7 +128,9 @@ function listFiles(dir, base = dir) {
   const out = [];
   for (const entry of readdirSync(dir).sort()) {
     const full = path.join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...listFiles(full, base));
+    const stat = lstatSync(full);
+    if (stat.isSymbolicLink()) throw new Error(`\u76EE\u6807\u76EE\u5F55\u5305\u542B\u7B26\u53F7\u94FE\u63A5\uFF0C\u62D2\u7EDD\u8DDF\u968F\uFF1A${full}`);
+    if (stat.isDirectory()) out.push(...listFiles(full, base));
     else out.push(path.relative(base, full).split(path.sep).join("/"));
   }
   return out;
@@ -137,7 +140,11 @@ function installSkill(root, target, opts = {}) {
   const payload = buildSkillPayload(root);
   const expected = new Map(payload.files.map((f) => [f.rel, f.content]));
   expected.set("manifest.json", manifestOf(payload));
-  const isEmptyTarget = !existsSync(target) || listFiles(target).length === 0;
+  const targetExists = existsSync(target);
+  if (targetExists && lstatSync(target).isSymbolicLink()) {
+    throw new Error(`\u76EE\u6807\u76EE\u5F55\u662F\u7B26\u53F7\u94FE\u63A5\uFF0C\u62D2\u7EDD\u8DDF\u968F\uFF1A${target}`);
+  }
+  const isEmptyTarget = !targetExists || listFiles(target).length === 0;
   if (!isEmptyTarget) {
     const actual = listFiles(target);
     const diff = [];
@@ -15425,14 +15432,14 @@ __export(validate_exports, {
   githubSlug: () => githubSlug,
   validateRepo: () => validateRepo
 });
-import { existsSync as existsSync3, lstatSync, readdirSync as readdirSync2, readFileSync as readFileSync4 } from "node:fs";
+import { existsSync as existsSync3, lstatSync as lstatSync2, readdirSync as readdirSync2, readFileSync as readFileSync4 } from "node:fs";
 import path4 from "node:path";
 function walkMd(dir, root, out = []) {
   for (const entry of readdirSync2(dir)) {
     const full = path4.join(dir, entry);
     const rel = path4.relative(root, full);
-    if (lstatSync(full).isSymbolicLink()) continue;
-    if (lstatSync(full).isDirectory()) {
+    if (lstatSync2(full).isSymbolicLink()) continue;
+    if (lstatSync2(full).isDirectory()) {
       if (SKIP_DIRS.has(entry)) continue;
       walkMd(full, root, out);
     } else if (entry.endsWith(".md")) {
@@ -15544,8 +15551,7 @@ function collectAnchors(text) {
 }
 function checkLinks(root) {
   const issues = [];
-  const exempt = (rel) => rel.startsWith(`docs${path4.sep}superpowers${path4.sep}`) || // 演示 fixture 内的链接指向目标项目结构（assets/、docs/ 等），在本仓不解析
-  rel.startsWith(`tests${path4.sep}fixtures${path4.sep}mouthtype${path4.sep}`) || // 模板链接指向目标项目结构（docs/、assets/ 等），在本仓不解析
+  const exempt = (rel) => rel.startsWith(`docs${path4.sep}superpowers${path4.sep}`) || // 模板链接指向目标项目结构（docs/、assets/ 等），在本仓不解析
   rel.startsWith(`templates${path4.sep}`);
   const files = walkMd(root, root).filter((f) => !exempt(f));
   const anchorCache = /* @__PURE__ */ new Map();
@@ -15561,12 +15567,25 @@ function checkLinks(root) {
       if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(raw) || raw.startsWith("//")) continue;
       const [filePart, fragment] = raw.split("#");
       const targetRel = filePart === void 0 || filePart === "" ? rel : path4.normalize(path4.join(path4.dirname(rel), filePart));
-      if (filePart && !existsSync3(path4.join(root, targetRel))) {
+      const targetPath = path4.resolve(root, targetRel);
+      const rootPath = path4.resolve(root);
+      if (targetPath !== rootPath && !targetPath.startsWith(`${rootPath}${path4.sep}`)) {
+        issues.push({ check: "link", file: rel, message: `\u8D8A\u754C\u76F8\u5BF9\u94FE\u63A5\uFF1A${raw}` });
+        continue;
+      }
+      if (filePart && !existsSync3(targetPath)) {
         issues.push({ check: "link", file: rel, message: `\u65AD\u94FE\uFF1A${raw}` });
         continue;
       }
       if (fragment && targetRel.endsWith(".md")) {
-        if (!anchorsOf(targetRel).has(decodeURIComponent(fragment))) {
+        let decodedFragment;
+        try {
+          decodedFragment = decodeURIComponent(fragment);
+        } catch {
+          issues.push({ check: "anchor", file: rel, message: `\u951A\u70B9\u7F16\u7801\u65E0\u6548\uFF1A${raw}` });
+          continue;
+        }
+        if (!anchorsOf(targetRel).has(decodedFragment)) {
           issues.push({ check: "anchor", file: rel, message: `\u574F\u951A\u70B9\uFF1A${raw}` });
         }
       }
@@ -15661,8 +15680,7 @@ var init_validate = __esm({
     HISTORY_HEADING = /历史|演进|升级摘要/;
     DRIFT_EXEMPT_FILES = /* @__PURE__ */ new Set(["CHANGELOG.md"]);
     PLACEHOLDER_PATTERN = /yourname|your-project|your_project|FIXME|(?<!\[)\bTODO\b/;
-    PLACEHOLDER_EXEMPT = (rel) => rel.startsWith(`templates${path4.sep}`) || rel.startsWith(`examples${path4.sep}`) || // demo fixture 含显式声明的 yourname 占位（教学用途）
-    rel.startsWith(`tests${path4.sep}fixtures${path4.sep}mouthtype${path4.sep}`) || rel.startsWith(`docs${path4.sep}superpowers${path4.sep}`);
+    PLACEHOLDER_EXEMPT = (rel) => rel.startsWith(`templates${path4.sep}`) || rel.startsWith(`examples${path4.sep}`) || rel.startsWith(`docs${path4.sep}superpowers${path4.sep}`);
   }
 });
 
@@ -15863,19 +15881,38 @@ function parseReviewFile(reviewPath, spec) {
     return result;
   }
   const ruleById = new Map(spec.rules.map((r) => [r.id, r]));
-  for (const raw of entries) {
-    const id = internalId(String(raw?.id ?? ""));
+  const seen = /* @__PURE__ */ new Set();
+  for (const item of entries) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      result.errors.push("review \u5217\u8868\u4E2D\u7684\u6BCF\u9879\u90FD\u5FC5\u987B\u662F\u5BF9\u8C61");
+      continue;
+    }
+    const raw = item;
+    if (typeof raw.id !== "string" || raw.id.trim() === "") {
+      result.errors.push("review \u9879\u7F3A\u5C11\u5B57\u7B26\u4E32 id");
+      continue;
+    }
+    const id = internalId(raw.id);
+    if (seen.has(id)) {
+      result.errors.push(`review \u91CD\u590D\u5F15\u7528\u89C4\u5219\uFF1A${id}`);
+      continue;
+    }
+    seen.add(id);
     const rule = ruleById.get(id);
     if (!rule) {
-      result.errors.push(`review \u5F15\u7528\u4E86\u4E0D\u5B58\u5728\u7684\u89C4\u5219\uFF1A${raw?.id}`);
+      result.errors.push(`review \u5F15\u7528\u4E86\u4E0D\u5B58\u5728\u7684\u89C4\u5219\uFF1A${raw.id}`);
       continue;
     }
     if (rule.evaluator !== "agent-reviewed") {
       result.errors.push(`review \u4E0D\u80FD\u8986\u76D6 deterministic \u89C4\u5219\uFF1A${id}`);
       continue;
     }
+    if (raw.status !== void 0 && raw.status !== "na") {
+      result.errors.push(`${id} \u7684 status \u53EA\u80FD\u662F na\uFF1B\u5176\u4ED6\u72B6\u6001\u7531 score \u548C\u9608\u503C\u63A8\u5BFC`);
+      continue;
+    }
     if (raw.status === "na") {
-      if (!raw.reason || raw.reason.trim() === "") {
+      if (typeof raw.reason !== "string" || raw.reason.trim() === "") {
         result.errors.push(`${id} \u7684 na \u5FC5\u987B\u9644\u975E\u7A7A reason`);
         continue;
       }
@@ -15886,8 +15923,12 @@ function parseReviewFile(reviewPath, spec) {
       result.errors.push(`${id} \u7684 score \u5FC5\u987B\u662F 0-5 \u7684\u6574\u6570`);
       continue;
     }
-    if (!raw.reason) {
-      result.errors.push(`${id} \u7F3A\u5C11 reason`);
+    if (typeof raw.reason !== "string" || raw.reason.trim() === "") {
+      result.errors.push(`${id} \u7F3A\u5C11\u975E\u7A7A\u5B57\u7B26\u4E32 reason`);
+      continue;
+    }
+    if (raw.evidence !== void 0 && (!Array.isArray(raw.evidence) || !raw.evidence.every((e) => typeof e === "string"))) {
+      result.errors.push(`${id} \u7684 evidence \u5FC5\u987B\u662F\u5B57\u7B26\u4E32\u5217\u8868`);
       continue;
     }
     result.scored.set(id, { score: raw.score, evidence: raw.evidence ?? [], reason: raw.reason });

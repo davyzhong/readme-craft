@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // 批量审计：对一个目录下的所有含 README.md 的子项目逐个跑 `readme-craft check`，
-// 汇总为一张确定性缺口表。审计报告归档建议写入 docs/audits/。
+// 汇总为一张确定性缺口表。报告可能包含仓库名与评分，应保存在私有位置。
 // 用法：
 //   node scripts/batch-audit.mjs <workspace-dir> [--exclude a,b,...] [--out <report.md>] [--strict]
 //   --exclude  跳过指定子目录（逗号分隔）

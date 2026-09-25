@@ -3,7 +3,7 @@
 > **目的**：给你一套**判断 + 决策**框架，而不是 checklist。checklist 是死的，框架让你在面对陌生项目时也能产出高归一化得分的 README。
 > **当前口径**：规则与评分以 `rules.yaml` 为唯一事实源（19 铁律 / 13 反模式 / 0-5 分锚点 / 归一化百分制）；本文件是规则的散文解释，两者冲突时以 `rules.yaml` 为准。
 >
-> **基于**：9 个本地自建项目对照 + 8 个 GitHub 公认最佳范本（fastapi、supabase、deno、tailwind、tauri、ollama、huggingface transformers、whisper-desktop、knowledge-base-app、iris、config-manager、atlas-planning）的逐字逐行分析；融合 12 个方法论/工具竞品对标（standard-readme、Art of README、awesome-readme、opensource.guide、Write the Docs 等）。
+> **依据**：公开项目范本、公开写作指南、README 相关工具和实测 fixture 的迭代。内部样本名称、评分和审计细节保存在私有归档中，不作为公开产品证据。
 
 ---
 
@@ -45,7 +45,7 @@
 - **做法**：首屏必须有**中央 logo + tagline + 1 张 hero 视觉**
 - **视觉类型**：产品截图 / GIF / 短视频 / SVG 架构图 / 终端截图 / 数据看板 / **动态 SVG banner**（v2 新增）
 - **进阶**：浅色/深色双 logo（用 `<picture>` + `prefers-color-scheme`）
-- **反面教材**：一个真实项目只有 54 行 0 图 — 没人知道这是什么
+- **反面教材**：README 只有项目名称和大段描述，却没有能展示产品的视觉内容。
 
 **v2 进阶**：动态 SVG banner 是 2025-2026 的新趋势。`gofiber/fiber`、`brenocq/implot3d` 用 GitHub Actions 自动生成 star history / discussion count SVG，banner 实时更新。
 
@@ -59,11 +59,9 @@
 
 - **做法**：1 句话讲"解决什么问题、给谁用"。第二句话讲"为什么选你不选别人"。
 - **公式**：`[做什么] + [给谁] + [独特优势]`
-- **反面教材**：`VoiceType` 说"macOS 原生语音听写应用" — 讲了做什么，没讲独特优势。
+- **反面教材**："一个 macOS 原生语音听写应用"只说明了产品类别，没有说明面向谁或为何选择它。
 
 **好的范例**：
-- `knowledge-base-app`: "AI Native 知识生产线 — 把碎片信息炼成体系化知识库"
-- `whisper-desktop`: "Speech-to-text and AI text processing for macOS ... Your voice data stays on your Mac with local models - or use cloud APIs for faster processing."
 - `fastapi`: "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 
 ---
@@ -103,7 +101,7 @@
   ```
   ...
   ```
-- **反面教材**：`VoiceType` 没有安装步骤 — 只能猜。
+- **反面教材**：项目只列依赖或下载链接，却没有可执行的安装步骤。
 - **范例**：`deno` 给了 6 种安装方式（Shell/PowerShell/brew/choco/winget/scoop）。
 
 ---
@@ -115,7 +113,7 @@
 - **30 秒试用按钮（v2 新增）**：顶部加 "Deploy to Netlify / Vercel / Cloudflare" 或 "Open in Gitpod / Codespaces" 按钮。
 - **60 秒 Quickstart**：从零到 demo ≤ 60 秒。给出 3-5 个编号步骤，每步可复制。
 - **配图**：必须有真实终端输出截图（不是示意图）
-- **反面教材**：`VoiceType` 没有 Quickstart — 用户装完后不知道第一步做什么。
+- **反面教材**：安装说明结束后没有最小可运行示例。
 
 **fastapi 范例**：
 ```
@@ -132,7 +130,7 @@
 
 ### T6 视觉矩阵（视觉轴 · **v2 升级**）
 
-> **v1 是截图三列（3 张静态图），v2 是视觉矩阵（3 截图 + 1 视频）。**
+> 截图数量和视频要求按项目类型与真实视觉素材判断；GUI 项目需要展示实际界面，CLI、库、服务和知识库可以按适用性豁免。
 
 - **做法**：
   - **3 张截图一组**，`<a><img></a>` 包裹（点击放大），`width=270`，带 alt
@@ -140,12 +138,12 @@
 - **位置**：放在 Features 章节上方
 - **反面教材**：单独放 1 张大图（不够丰富）或 8 张散落（没有节奏）
 
-**whisper-desktop 静态范例**：
+**静态截图示例**：
 ```html
 <p align="center">
-  <a href=".github/screenshots/home.png"><img src=".github/screenshots/home.png" width="270" alt="Home Dashboard"></a>
-  <a href=".github/screenshots/recording.png"><img src=".github/screenshots/recording.png" width="270" alt="Recording & Hotkeys"></a>
-  <a href=".github/screenshots/prompts.png"><img src=".github/screenshots/prompts.png" width="270" alt="Custom Prompts"></a>
+  <a href="assets/screenshots/home.png"><img src="assets/screenshots/home.png" width="270" alt="应用首页和主要导航"></a>
+  <a href="assets/screenshots/task.png"><img src="assets/screenshots/task.png" width="270" alt="核心任务执行界面"></a>
+  <a href="assets/screenshots/settings.png"><img src="assets/screenshots/settings.png" width="270" alt="配置界面和可调整选项"></a>
 </p>
 ```
 
@@ -166,11 +164,11 @@
 - **格式**：
   ```markdown
   - **Fast**: 性能对标 NodeJS/Go（基于 Starlette + Pydantic）。[One of the fastest Python frameworks](#performance)。
-  - **Fast to code**: 开发速度提升 200%-300%。*
-  - **Fewer bugs**: 减少 40% 人为错误。*
+  - **Fast to code**: 说明用户完成任务需要的步骤或时间，并链接到可复验示例。
+  - **Fewer mistakes**: 只在有可复验数据时给出错误率或维护成本变化。
   ```
 - **数量**：4-6 条最佳。少于 3 条显单薄，多于 8 条没人看
-- **反面教材**：`ScreenCast` 用 emoji bullet 堆 28 个特性 — 信息密度太高反而抓不住重点
+- **反面教材**：用大量 emoji bullet 堆砌功能，读者难以识别真正重要的能力。
 
 **fastapi 7 keys 模式**是最经典的范本。
 
@@ -184,7 +182,7 @@
 - **T8b Ecosystem（v2 新增）**：多模块项目加兄弟项目 / SDK / 工具列表
 - **格式**：emoji + 粗体词 + 一句话描述
 
-**T8a 范例 — whisper-desktop**：
+**T8a 范例**：
 ```
 ### Transcription
 - **Nine engines** - WhisperKit、Parakeet、Granite Speech、Qwen3 ASR、Voxtral、Groq、OpenAI Whisper 等
@@ -255,7 +253,7 @@
   - Related Projects / See Also
   - **Community Stats**（v2 新增）— Star History SVG + Contributor 头像列表
 
-**反面教材**：`iris` 把 21 国国旗 logo 列阵 + 19 个 supporter 头像墙 — 喧宾夺主。
+**反面教材**：把大量国旗、logo 或头像放在主内容前，挤占了项目用途和使用路径。
 
 ---
 
@@ -264,7 +262,7 @@
 > **standard-readme 在 2017 就规定了 BCP 47 命名规则，readme-craft 直到 v2 才纳入。**
 
 - **做法**：
-  - `README.md` 必须是英文（GitHub 搜索默认匹配）
+  - 默认语言应由主要读者、社区交流语言和项目服务地区决定；英文不是默认硬要求
   - 多语言版本用 `README.<BCP47>.md`，例如 `README.zh.md` / `README.ja.md` / `README.de.md`
   - 不强制全语言覆盖，但必须明确**支持策略**（"English + Chinese 暂支持，其他欢迎 PR"）
 - **反面教材**：33 国国旗 logo 链接全部塞进 README — 翻译维护地狱；首页被国旗淹没
@@ -338,12 +336,12 @@
 
 ### T17 默认语言策略（内容轴 · **v2.1 新增**）
 
-> **standard-readme 在 2017 规定 `README.md` 默认英文（GitHub 搜索匹配默认）。但中文项目应该让中文用户打开看到中文。**
+> **默认语言取决于主要读者和维护者能持续提供的语言版本；README 不需要默认使用某一种语言。**
 
 - **做法**：
   - **判断读者群体**：
-    - 中文用户为主（如国内个人/团队项目）→ `README.md` = 中文，`README.en.md` = 英文
-    - 海外用户为主 → `README.md` = 英文，`README.zh.md` = 中文
+    - 中文用户为主 → 默认 README 可使用中文，其他语言按实际需求提供
+    - 英文用户为主 → 默认 README 可使用英文，其他语言按实际需求提供
     - 双语用户都有 → 默认语言 = 优先群体，另一种放 `<lang>.md`
   - **判断流程**：
     1. 项目作者日常用什么语言思考？
@@ -356,74 +354,21 @@
   - 实际**项目是中文**但 README.md 是英文 → 中文用户打开 GitHub 仓库看到全英文，第一印象不对
   - 反过来也成立：英文项目用中文 README → 海外用户看不懂
 
-- **v2.1 教训来源**：readme-craft 自身 v2 改造时，21 个兄弟项目都按 `README.md` 英文 + `README.zh.md` 中文处理，**但用户实际工作语言是中文**，导致默认看到英文版本，需要全部翻转为中文为主。
+- **v2.1 教训**：不要预设所有项目的默认语言都应为英文或中文。应根据主要读者、项目定位和社区交流语言来决定。
 
-- **示例**：
-  - 国内开源工具 → `README.md` 中文 + `README.en.md` 英文
-  - 中国出海 SaaS → `README.md` 英文 + `README.zh.md` 中文（匹配 GitHub 搜索）
-  - 中文方法论文档 → `README.md` 中文（无需英文版）
+- **示例**：中文或英文都可以作为默认语言；在 README 顶部提供清楚的语言切换入口，并只承诺维护者能持续同步的版本。
 
 ---
 
-### T18 截图自动化（视觉轴 · **v2.2 新增**）
+### T18 截图自动化（视觉轴 · v2.2 新增）
 
-> **README 引用的截图必须由自动化脚本产生，禁止人工维护——这是 v0.5.1 教训。**
+README 中展示的截图应由可复跑的脚本生成，并在适用的 CI 中检查，减少截图与产品当前行为脱节的风险。截图是否适用取决于项目是否有需要展示的视觉界面；适用范围与评分锚点以 `rules.yaml` 为准。
 
-- **为什么是 v2.2 新增铁律**：
-  - retro-arcade v0.5.0 真实界面（果园竞技场 + 12 条带天赋小蛇）与 README 引用的旧截图（v0.4.x 圆球蛇）差异巨大
-  - 用户手动指出"界面差距太大"，但旧截图已经 push 到 GitHub 仓库
-  - 即使本地更新了截图，下次代码改了又会过时
-  - **唯一解药：截图脚本自动化**
-
-- **做法**：
-  - **CLI 工具**：vhs（终端 GIF/MP4）+ terminalizer
-  - **Web 应用**：Playwright / Puppeteer / Cypress（headless Chromium）
-  - **桌面应用**：Playwright（macOS）+ Appium（Windows）
-  - **GitHub Action**：`.github/workflows/screenshot.yml`
-    ```yaml
-    on:
-      push:
-        paths: [源代码路径]
-      schedule:
-        - cron: '0 0 * * *' # 每天 0 点
-      workflow_dispatch:
-    ```
-  - **触发机制**：
-    1. 代码 push 触发（开发改完代码立即更新截图）
-    2. 定时触发（每天 0 点兜底，防止遗漏）
-    3. 手动触发（workflow_dispatch，紧急情况下用）
-
-- **自动化要求**：
-  - 截图必须由脚本产生，**禁止人工 update**
-  - 截图文件名语义化（`retro-arcade-playing.png` 而非 `img_20260921.png`）
-  - 截图分辨率固定（桌面 1280×800 / 移动 390×844）
-  - 截图覆盖 README 截图矩阵的全部场景
-
-- **反面教材**：
-  - 截图是手动截的（如 `Screenshot 2026-09-21 上午10.09.18.png`）
-  - 截图文件名带日期（每次更新都要重命名）
-  - 截图和代码不同步（README 里截图是 v0.4.x，实际界面是 v0.5.0）
-  - CI 里没有截图自动化 workflow
-
-- **v2.2 教训来源**：
-  - retro-arcade v0.5.0 上线后，用户手动指出 README 截图严重过时
-  - 修复方案：Playwright + GitHub Action 自动化（v0.5.1 commit `c783360`）
-  - 推广到 readme-craft 所有方法论项目：**每个项目都必须有自动化截图脚本**
-
-- **实施方案**：
-  - ✅ retro-arcade v0.5.1 已落地（`scripts/screenshot.js` + `.github/workflows/screenshot.yml`）
-  - ⏳ readme-craft 自身 banner.svg（暂用手画 SVG，可升级为 Playwright 自动化）
-  - ⏳ 21 个兄弟项目：每个项目都需要截图脚本（v3 计划批量落地）
-
-- **示例**（retro-arcade 实际代码片段）：
-  ```javascript
-  // scripts/screenshot.js
-  const SCREENSHOT_CONFIG = [
-    { name: 'retro-arcade-snake-select-latest.png', viewport: { width: 1280, height: 800 } },
-    { name: 'retro-arcade-mobile-select.png', viewport: { width: 390, height: 844 } },
-    // ... 更多场景
-  ];
-  ```
+- Web / GUI：使用 Playwright、Puppeteer 或等效浏览器自动化。
+- CLI：使用 VHS 等终端录制工具；纯库、服务或知识库在没有面向用户截图时可判 N/A。
+- 使用稳定、可读的文件名和固定视口；失败时返回非零状态，并让 CI 输出可定位的诊断信息。
+- 触发条件按产品变更频率设置；不把每日定时任务作为所有项目的硬性要求。
+- 复用示例：[`examples/screenshot-automation/`](./examples/screenshot-automation/) 中的 Playwright 与 VHS 配置。
 
 ---
 
@@ -433,7 +378,7 @@
 
 - **为什么 v2.3.1 重写**：
   - v2.3 版本条把「`npm ci`→`npm install`、移除 cache」当作解药，实际是**牺牲依赖可复现性换 CI 变绿**，方向错误
-  - 13 个兄弟项目 CI 报错的根因是「`.gitignore` 排除 lockfile + `cache: 'npm'` 强依赖 lockfile」——正确修复是提交 lockfile，而不是绕开它
+  - 忽略 lockfile 却启用依赖缓存时，CI 会因找不到 lockfile 失败——正确修复是提交 lockfile，而不是绕开它
 
 - **5 条铁则（v2.3.1 修订版）**：
   1. **lockfile 必须入库**：`package-lock.json` / `pnpm-lock.yaml` / `yarn.lock` 提交进仓库，不从 `.gitignore` 排除
@@ -442,10 +387,7 @@
   4. **运行时与包管理器版本固定**：`package.json` 用 `packageManager` 字段固定包管理器精确版本；Node 版本用 `.nvmrc` 或 workflow 显式固定
   5. **README 链接检查进 CI + 报错可诊断**：README 引用的相对链接与双语文件（如 `README.en.md`）存在性检查进 CI；失败信息必须指明缺失文件与修复路径
 
-- **反面教材**（v3 批量落地时的真实事故，v2.3.1 修正了结论）：
-  - **13 个项目同时报 lockfile 缺失**：根因是 `.gitignore` 排除 lockfile 却开启 `cache: 'npm'` → 正确修复 = 提交 lockfile
-  - **双语翻转后链接失效**：v2.1 双语策略翻转后 README 仍引用已删除的 `README.zh.md` → 正确修复 = 更新引用，并让链接检查拦住这类错误
-  - **pnpm / corepack 兼容问题**：正确修复 = `packageManager` 字段固定版本（而非永久回避 corepack）
+- **常见反例**：忽略 lockfile 却启用依赖缓存、绕过 frozen install、语言文件重命名后保留旧链接，或没有固定运行时版本。
 
 - **CI 检查表**：
   - [ ] lockfile 在仓库内（不在 `.gitignore`）
@@ -455,7 +397,7 @@
   - [ ] README 相对链接 / 双语文件存在性检查在 CI 中
   - [ ] 失败信息可诊断（指明缺失文件与修复动作）
 
-- **教训来源**：v3 T18 截图自动化批量落地 16 个项目后，13 个 CI 集中报错；逐个修复发现本质同类（lockfile 处理 + README 链接），遂升级为铁律 + 反模式。
+- **教训**：CI 故障应从依赖锁定、缓存配置、工具链版本和文档链接等根因排查，不应只改成更宽松的安装命令。
 
 - **AI Agent 集成规则**：任何 Agent 帮你写 GitHub Action 前，必须先读本条 + 过一遍检查表；新 workflow 若靠「放宽安装」让 CI 变绿，视为违反本铁律。
 
@@ -518,40 +460,15 @@ v3 起，评分以仓库 `rules.yaml` 为唯一事实源：每条铁律按 0-5 �
 
 **分数解释**：v3 起不再使用「80-95 上 Trending」式原始分评级；发版建议以归一化百分制为准，见 `checklist.md` 的「发版建议（归一化百分制）」表。评级只看缺口分布，不构成任何分数承诺。
 
-**典型案例评分**（v2.1 85 分制下的历史评测；v2.3 起 95 分制，数值不可直接比较，仅作历史参考）：
-- `whisper-desktop`：64/85
-- `fastapi`：76/85
-- `knowledge-base-app`：60/85（v2.1 新增 T17 默认中文 +5 → 65/85）
-- `iris`：48/85
-- `VoiceType`：22/85
-- `bare-minimum`：14/85
-- `config-manager`：50/85
+历史量表曾用于内部样本评估，口径已多次变更，原始分数不适合跨版本比较，因此不在公开方法论中列出。当前评分以 `rules.yaml` 为准，并以适用项、已核验项和未核验项共同解释。
 
 ---
 
 ## 5. 同行对标
 
-> **readme-craft 是唯一把"方法论 + 反模式 + 量化评分 + AI Skill + 真实案例 + AI 时代适配"做成完整闭环的 README 项目。**
+README 中的[同类工具与方法对照](./README.md#-同类工具与方法对照)按工具类别、公开功能和用途归纳，并标明检查日期。该市场包含作者工具、质量检查器、组织级治理工具、Agent Skills、规范和写作指南；它们的任务和评分口径不同，不能用单一功能矩阵推断谁“更完整”。
 
-| 项目 | 类型 | 方法论 | 反模式 | 评分 | AI Skill | i18n | a11y | LLM |
-|---|---|---|---|---|---|---|---|---|
-| **readme-craft v3.0.0-alpha.0** | 方法论+Skill | 19 铁律 | 13 条 | 95 分（v3 起归一化） | ✓ craft-readme | ✓ T13 | ✓ T16 | ✓ T15 |
-| readme.so | 在线编辑器 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| readme-md-generator | CLI 工具 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| standard-readme | 规范 | section 列表 | ✗ | ✗ | ✗ | ✓ BCP 47 | ✗ | ✗ |
-| common-readme | 早期规范 | 5 段模板 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| Art of README | 长文 | 散文 | "Things NOT" | ✗ | ✗ | ✗ | ✗ | ✗ |
-| awesome-readme | 范例库 | 100+ 案例 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| makeareadme | 教程+编辑器 | 段落式 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| opensource.guide | 权威指南 | 4 黄金问题 | ✗ | ✗ | ✗ | ✓ | ✓ | ✗ |
-| Write the Docs | 文档学 | a11y / 去偏见 | ✗ | ✗ | ✗ | ✓ | ✓ | ✗ |
-| Zalando | 企业模板 | 合规章节 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-
-**关键洞察**：
-1. **方法论赛道 readme-craft 是真正完整的** — 其他项目覆盖维度都不超过 2-3 个
-2. **standard-readme 在 i18n 上领先** — readme-craft 已纳入
-3. **Write the Docs 在 a11y / 包容性语言上领先** — readme-craft 已纳入
-4. **没有任何竞品覆盖 AI / LLM 友好维度** — readme-craft 首创 T15
+2026 年可见的新增方向包括：可配置权重与 GitHub Action 的 README checker、组织级批量 harmonization、基于项目证据的 Agent Skills，以及让用户定义自然语言 lint 规则的研究原型。readme-craft 的区别应描述为**组合定位**：版本化规则源、确定性 CLI、按项目类型应用规则、未核验状态、可复验的 Skill / Action / 本地 Web 投影。不能宣称“唯一”、 “首创”或“覆盖所有竞品”，除非有范围明确、可复现的比较证据。
 
 ---
 
@@ -602,10 +519,10 @@ v3 起，评分以仓库 `rules.yaml` 为唯一事实源：每条铁律按 0-5 �
 
 ## 8. 进化路线
 
-- **v1（2026-09-21）** — 12 铁律 + 8 反模式 + 4 模板 + craft-readme Skill + VoiceType 示例
+- **v1（2026-09-21）** — 12 铁律 + 8 反模式 + 4 模板 + craft-readme Skill + 演示样例
 - **v2 → v2.3（2026-09-21）** — 铁律 16→19（+i18n / 包容性 / LLM / a11y / 默认语言 / 截图自动化 / CI），反模式 10→13，量表 80→95
 - **v2.3.1（2026-09-22）** — 治理修复：版本口径统一、T19 重写为「CI 可复现与可诊断」、治理文件齐备、案例诚实化、评分展示与营销数字解耦
-- **v3.0（计划）** — `rules.yaml` 单一事实源 + `validate` / `generate` / `check` CLI + Skill 打包；对外评分改为归一化百分制 + N/A；alpha（核心）→ beta（Action + 截图示例）→ RC（本地 Web 评分页）。（执行方案见内部文档）
+- **v3.0.0-alpha.0（2026-09-23）** — `rules.yaml` 单一事实源 + `validate` / `generate` / `check` CLI + Skill 打包 + 归一化评分；随后补齐 GitHub Action、截图示例和本地 Web 评分页。更细的提交演进见[项目历史归档](./docs/archive/project-history.md)。
 
 ---
 

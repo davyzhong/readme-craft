@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync, lstatSync, existsSync, mkdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, lstatSync, existsSync, mkdirSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -97,6 +97,33 @@ test("install --replace 显式替换不同内容", () => {
   const skill = payload.files.find((f) => f.rel === "SKILL.md");
   assert.ok(skill);
   assert.deepEqual(readFileSync(path.join(target, "SKILL.md")), skill.content);
+});
+
+test("install --replace 拒绝作为目标根目录的符号链接", (t) => {
+  const root = tmp("readme-craft-symlink-target-");
+  t.after(() => import("node:fs").then(({ rmSync }) => rmSync(root, { recursive: true, force: true })));
+  const outside = path.join(root, "outside");
+  mkdirSync(outside);
+  writeFileSync(path.join(outside, "keep.txt"), "保留\n");
+  const target = path.join(root, "target");
+  symlinkSync(outside, target, "dir");
+
+  assert.throws(() => installSkill(repoRoot, target, { replace: true }), /符号链接/);
+  assert.equal(readFileSync(path.join(outside, "keep.txt"), "utf8"), "保留\n");
+});
+
+test("install --replace 不跟随目标目录内指向外部的符号链接", (t) => {
+  const root = tmp("readme-craft-symlink-entry-");
+  t.after(() => import("node:fs").then(({ rmSync }) => rmSync(root, { recursive: true, force: true })));
+  const outside = path.join(root, "outside");
+  const target = path.join(root, "target");
+  mkdirSync(outside);
+  mkdirSync(target);
+  writeFileSync(path.join(outside, "keep.txt"), "保留\n");
+  symlinkSync(outside, path.join(target, "external"), "dir");
+
+  assert.throws(() => installSkill(repoRoot, target, { replace: true }), /符号链接/);
+  assert.equal(readFileSync(path.join(outside, "keep.txt"), "utf8"), "保留\n");
 });
 
 // ---------- CLI ----------

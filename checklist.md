@@ -44,12 +44,12 @@
 
 - [ ] **有 `.github/workflows/screenshot.yml`** 或等价自动化机制
 - [ ] 截图必须由脚本产生（Playwright / Puppeteer / vhs / Cypress 等）
-- [ ] 截图文件名语义化（`retro-arcade-playing.png` 而非 `img_20260921.png`）
+- [ ] 截图文件名语义化（如 `feature-flow.png` 而非 `img_20260921.png`）
 - [ ] 截图分辨率固定（桌面 1280×800 / 移动 390×844）
 - [ ] CI 触发：push + 每天 0 点兜底 + 手动触发
 - [ ] 截图覆盖 README 截图矩阵全部场景
 
-**如果不通过**：写 Playwright 脚本（参考 retro-arcade `scripts/screenshot.js`）+ GitHub Action 自动化（参考 `.github/workflows/screenshot.yml`）。**禁止人工 update 截图**。
+**如果不通过**：为项目编写 Playwright/VHS 等截图脚本并在 CI 中运行。**禁止人工 update 截图**。
 
 ---
 
@@ -114,7 +114,7 @@
 
 ### T17 · 默认语言策略（v2.1 新增）
 
-- [ ] 默认语言 = 主要用户群体的语言（中文项目 → `README.md` 中文 + `README.en.md` 英文；出海项目反之）
+- [ ] 默认语言与主要读者相符；是否提供其他语言由维护能力和用户需求决定，不要求每个项目都做双语
 - [ ] 判断依据：作者工作语言 / Issues 与社区讨论语言 / 团队母语分布
 - [ ] 语言切换链接集中在顶部一处，不散落全文
 
@@ -160,13 +160,11 @@
 
 ### T15 · LLM 友好元数据
 
-- [ ] README 顶部有 YAML frontmatter（name / description / capabilities），或等效的结构化元数据方案
-- [ ] 关键章节用语义标题（Installation / Quickstart / Usage / Architecture）
+- [ ] 使用语义化章节标题（Installation / Quickstart / Usage / Architecture）
 - [ ] 命令行示例用代码块，不是截图
-- [ ] **推荐**：提供 `llms.txt` 或 `summary.txt`
+- [ ] **可选增强**：提供 `llms.txt` 或合法 YAML frontmatter
 
-> ⚠️ 注意：GitHub 渲染 README 时 frontmatter 不会隐藏，会在标题上方显示为可见内容，
-> 与 T1 视觉锤存在张力。放置前先在真实渲染环境确认效果（v3.0 将在 rules.yaml 中固化决策）。
+> **已冻结（D-4）**：README 顶部 frontmatter 不作硬性要求。GitHub 会将其作为可见内容渲染；若采用，先确认首屏效果并保证 YAML 合法。
 
 **测试方法**：用 ChatGPT / Gemini 问 5 个 README 应该能回答的问题，看答案是否准确。
 

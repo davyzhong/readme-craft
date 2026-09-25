@@ -238,19 +238,38 @@ function parseReviewFile(reviewPath: string, spec: Spec): ParsedReview {
     return result;
   }
   const ruleById = new Map(spec.rules.map((r) => [r.id, r]));
-  for (const raw of entries as ReviewEntry[]) {
-    const id = internalId(String(raw?.id ?? ""));
+  const seen = new Set<string>();
+  for (const item of entries as unknown[]) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      result.errors.push("review 列表中的每项都必须是对象");
+      continue;
+    }
+    const raw = item as Partial<ReviewEntry>;
+    if (typeof raw.id !== "string" || raw.id.trim() === "") {
+      result.errors.push("review 项缺少字符串 id");
+      continue;
+    }
+    const id = internalId(raw.id);
+    if (seen.has(id)) {
+      result.errors.push(`review 重复引用规则：${id}`);
+      continue;
+    }
+    seen.add(id);
     const rule = ruleById.get(id);
     if (!rule) {
-      result.errors.push(`review 引用了不存在的规则：${raw?.id}`);
+      result.errors.push(`review 引用了不存在的规则：${raw.id}`);
       continue;
     }
     if (rule.evaluator !== "agent-reviewed") {
       result.errors.push(`review 不能覆盖 deterministic 规则：${id}`);
       continue;
     }
+    if (raw.status !== undefined && raw.status !== "na") {
+      result.errors.push(`${id} 的 status 只能是 na；其他状态由 score 和阈值推导`);
+      continue;
+    }
     if (raw.status === "na") {
-      if (!raw.reason || raw.reason.trim() === "") {
+      if (typeof raw.reason !== "string" || raw.reason.trim() === "") {
         result.errors.push(`${id} 的 na 必须附非空 reason`);
         continue;
       }
@@ -261,8 +280,12 @@ function parseReviewFile(reviewPath: string, spec: Spec): ParsedReview {
       result.errors.push(`${id} 的 score 必须是 0-5 的整数`);
       continue;
     }
-    if (!raw.reason) {
-      result.errors.push(`${id} 缺少 reason`);
+    if (typeof raw.reason !== "string" || raw.reason.trim() === "") {
+      result.errors.push(`${id} 缺少非空字符串 reason`);
+      continue;
+    }
+    if (raw.evidence !== undefined && (!Array.isArray(raw.evidence) || !raw.evidence.every((e) => typeof e === "string"))) {
+      result.errors.push(`${id} 的 evidence 必须是字符串列表`);
       continue;
     }
     result.scored.set(id, { score: raw.score, evidence: raw.evidence ?? [], reason: raw.reason });

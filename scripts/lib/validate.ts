@@ -172,8 +172,6 @@ export function checkLinks(root: string): Issue[] {
   const issues: Issue[] = [];
   const exempt = (rel: string) =>
     rel.startsWith(`docs${path.sep}superpowers${path.sep}`) ||
-    // 演示 fixture 内的链接指向目标项目结构（assets/、docs/ 等），在本仓不解析
-    rel.startsWith(`tests${path.sep}fixtures${path.sep}mouthtype${path.sep}`) ||
     // 模板链接指向目标项目结构（docs/、assets/ 等），在本仓不解析
     rel.startsWith(`templates${path.sep}`);
 
@@ -195,12 +193,25 @@ export function checkLinks(root: string): Issue[] {
         filePart === undefined || filePart === ""
           ? rel
           : path.normalize(path.join(path.dirname(rel), filePart));
-      if (filePart && !existsSync(path.join(root, targetRel))) {
+      const targetPath = path.resolve(root, targetRel);
+      const rootPath = path.resolve(root);
+      if (targetPath !== rootPath && !targetPath.startsWith(`${rootPath}${path.sep}`)) {
+        issues.push({ check: "link", file: rel, message: `越界相对链接：${raw}` });
+        continue;
+      }
+      if (filePart && !existsSync(targetPath)) {
         issues.push({ check: "link", file: rel, message: `断链：${raw}` });
         continue;
       }
       if (fragment && targetRel.endsWith(".md")) {
-        if (!anchorsOf(targetRel).has(decodeURIComponent(fragment))) {
+        let decodedFragment: string;
+        try {
+          decodedFragment = decodeURIComponent(fragment);
+        } catch {
+          issues.push({ check: "anchor", file: rel, message: `锚点编码无效：${raw}` });
+          continue;
+        }
+        if (!anchorsOf(targetRel).has(decodedFragment)) {
           issues.push({ check: "anchor", file: rel, message: `坏锚点：${raw}` });
         }
       }
@@ -215,8 +226,6 @@ const PLACEHOLDER_PATTERN = /yourname|your-project|your_project|FIXME|(?<!\[)\bT
 const PLACEHOLDER_EXEMPT = (rel: string) =>
   rel.startsWith(`templates${path.sep}`) ||
   rel.startsWith(`examples${path.sep}`) ||
-  // demo fixture 含显式声明的 yourname 占位（教学用途）
-  rel.startsWith(`tests${path.sep}fixtures${path.sep}mouthtype${path.sep}`) ||
   rel.startsWith(`docs${path.sep}superpowers${path.sep}`);
 
 export function checkPlaceholders(root: string): Issue[] {

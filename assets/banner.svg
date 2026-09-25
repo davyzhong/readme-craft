@@ -83,13 +83,13 @@
   <g font-family="-apple-system, sans-serif" font-size="13" fill="#c7d2fe">
     <text x="80" y="495">📦 4 套模板：minimal · standard · rich · cn-academic</text>
     <text x="80" y="520">🤖 craft-readme Skill（供 Agent 调用）</text>
-    <text x="80" y="545">📸 改造示例：MouthType 素材 54→230 行（fixture）</text>
+    <text x="80" y="545">📸 六类项目 fixture + 可复验规则检查</text>
     <text x="80" y="570">🏆 同行对照：readme.so · common-readme · readme-md-generator · Art of README</text>
 
     <text x="1120" y="495" text-anchor="end" fill="#fbbf24">⭐ MIT License</text>
     <text x="1120" y="520" text-anchor="end" fill="#fbbf24">🏆 Built by Davy</text>
     <text x="1120" y="545" text-anchor="end" fill="#fbbf24">🌟 AI Native 知识工程</text>
-    <text x="1120" y="570" text-anchor="end" fill="#fbbf24">📅 v2.3.1 · 2026 Q3</text>
+    <text x="1120" y="570" text-anchor="end" fill="#fbbf24">📅 v3.0.0-alpha.0 · 2026</text>
   </g>
 
   <!-- Footer bar -->

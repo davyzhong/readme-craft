@@ -1,7 +1,6 @@
 # assets/ · README 资源目录
 
-> 当前目录只包含 `banner.svg`（手绘 SVG，README 首屏 hero）。演示截图（改造前后对照、
-> 模板渲染效果等）将在 v3.0 的截图自动化示例（Playwright / VHS）落地后补齐。
+> 当前目录包含 `banner.svg`（手绘 SVG，README 首屏 hero）。Playwright / VHS 截图自动化示例已在 `examples/screenshot-automation/` 提供；示例生成物不作为本项目的产品截图。
 
 ## 当前文件
 
@@ -12,8 +11,8 @@
 ## 资源策略
 
 - **首屏 banner**：`banner.svg`（手绘架构图），可作为永久 fallback
-- **示例截图**：v3.0 用 vhs/terminalizer 录 CLI 终端、用 Playwright 截 GUI 界面（可复制示例将放在 `examples/screenshot-automation/`）
-- **README 渲染图**：v3.0 用 Playwright 自动化截 GitHub README 渲染效果
+- **截图自动化示例**：Playwright 适合 Web/GUI，VHS 适合终端录制；运行前置条件与用法见示例目录。
+- **README 渲染图**：本仓没有自动发布 GitHub 渲染截图的工作流；如增加此能力，需单独规划并验证。
 
 ## 贡献指引
 

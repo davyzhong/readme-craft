@@ -82,6 +82,21 @@ test("broken anchor in README is reported", () => {
   assert.ok(issues.some((i) => i.message.includes("不存在的锚点")), JSON.stringify(issues));
 });
 
+test("repository links cannot read markdown outside the root", () => {
+  const dir = tmp();
+  const outside = path.join(path.dirname(dir), `${path.basename(dir)}-outside.md`);
+  writeFileSync(path.join(dir, "README.md"), `[outside](../${path.basename(outside)}#private)\n`);
+  const issues = checkLinks(dir);
+  assert.ok(issues.some((i) => i.message.includes("越界相对链接")), JSON.stringify(issues));
+});
+
+test("malformed percent-encoded anchors become validation issues", () => {
+  const dir = tmp();
+  writeFileSync(path.join(dir, "README.md"), "# heading\n\n[bad](#%E0%A4%A)\n");
+  const issues = checkLinks(dir);
+  assert.ok(issues.some((i) => i.message.includes("锚点编码无效")), JSON.stringify(issues));
+});
+
 test("github-style anchor of an emoji heading resolves", () => {
   const dir = tmp();
   writeFileSync(path.join(dir, "README.md"), "## 🗓️ Roadmap\n\n[跳转](#-roadmap)\n");

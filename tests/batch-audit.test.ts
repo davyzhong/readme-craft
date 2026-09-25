@@ -28,6 +28,6 @@ test("batch-audit 对 fixtures 目录输出汇总表", () => {
 
 test("batch-audit --strict 在存在确定性 fail 时退出 1", () => {
   const res = run([fixtures, "--strict"]);
-  // fixtures 中至少存在 fail 用例（如 mouthtype 的 T12）→ 1；若全部通过则 0
+  // fixtures 中至少存在 cli 负向用例 → 1；若全部通过则 0
   assert.ok(res.status === 0 || res.status === 1);
 });

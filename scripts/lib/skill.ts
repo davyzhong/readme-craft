@@ -5,6 +5,7 @@
 import { createHash } from "node:crypto";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -104,7 +105,9 @@ function listFiles(dir: string, base = dir): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir).sort()) {
     const full = path.join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...listFiles(full, base));
+    const stat = lstatSync(full);
+    if (stat.isSymbolicLink()) throw new Error(`目标目录包含符号链接，拒绝跟随：${full}`);
+    if (stat.isDirectory()) out.push(...listFiles(full, base));
     else out.push(path.relative(base, full).split(path.sep).join("/"));
   }
   return out;
@@ -119,7 +122,11 @@ export function installSkill(root: string, target: string, opts: { replace?: boo
   const expected = new Map(payload.files.map((f) => [f.rel, f.content] as const));
   expected.set("manifest.json", manifestOf(payload));
 
-  const isEmptyTarget = !existsSync(target) || listFiles(target).length === 0;
+  const targetExists = existsSync(target);
+  if (targetExists && lstatSync(target).isSymbolicLink()) {
+    throw new Error(`目标目录是符号链接，拒绝跟随：${target}`);
+  }
+  const isEmptyTarget = !targetExists || listFiles(target).length === 0;
   if (!isEmptyTarget) {
     const actual = listFiles(target);
     const diff: string[] = [];

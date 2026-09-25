@@ -4,7 +4,7 @@
 
 import { createServer } from "node:http";
 import type { Server } from "node:http";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildWeb } from "./web-build.ts";
@@ -22,16 +22,40 @@ export function createWebServer(root: string): Server {
   const webRoot = path.join(root, "web");
   buildWeb(root);
   return createServer((req, res) => {
-    const urlPath = decodeURIComponent((req.url ?? "/").split("?")[0] ?? "/");
+    let urlPath: string;
+    try {
+      urlPath = decodeURIComponent((req.url ?? "/").split("?")[0] ?? "/");
+    } catch {
+      res.writeHead(400).end("bad request");
+      return;
+    }
     const rel = urlPath === "/" ? "index.html" : urlPath.replace(/^\/+/, "");
-    const file = path.join(webRoot, rel);
-    if (!file.startsWith(webRoot) || !existsSync(file) || !statSync(file).isFile()) {
+    const file = path.resolve(webRoot, rel);
+    if (!isWithin(webRoot, file) || !existsSync(file)) {
       res.writeHead(404).end("not found");
       return;
     }
-    res.writeHead(200, { "content-type": MIME[path.extname(file)] ?? "application/octet-stream" });
-    res.end(readFileSync(file));
+    let realRoot: string;
+    let realFile: string;
+    try {
+      realRoot = realpathSync(webRoot);
+      realFile = realpathSync(file);
+    } catch {
+      res.writeHead(404).end("not found");
+      return;
+    }
+    if (!isWithin(realRoot, realFile) || !statSync(realFile).isFile()) {
+      res.writeHead(404).end("not found");
+      return;
+    }
+    res.writeHead(200, { "content-type": MIME[path.extname(realFile)] ?? "application/octet-stream" });
+    res.end(readFileSync(realFile));
   });
+}
+
+function isWithin(parent: string, candidate: string): boolean {
+  const relative = path.relative(parent, candidate);
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
 }
 
 const invokedAsScript = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);

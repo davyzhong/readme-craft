@@ -77,6 +77,22 @@ test("review na requires a non-empty reason", () => {
   assert.ok(report.errors.some((e) => e.includes("T01")), JSON.stringify(report.errors));
 });
 
+test("malformed review field types are reported as input errors instead of crashing", () => {
+  const dir = tmpProject("# 项目\n");
+  const bad = `reviews:
+  - id: T01
+    status: na
+    reason: 123
+  - id: T02
+    score: 4
+    evidence: not-a-list
+    reason: 有证据
+`;
+  const report = checkProject(dir, { types: ["cli"], reviewPath: writeReview(dir, bad) });
+  assert.ok(report.errors.some((e) => e.includes("T01")), JSON.stringify(report.errors));
+  assert.ok(report.errors.some((e) => e.includes("T02")), JSON.stringify(report.errors));
+});
+
 test("review score outside 0-5 is an error", () => {
   const dir = tmpProject("# 项目\n");
   const bad = "reviews:\n  - id: T01\n    score: 9\n    evidence: []\n    reason: x\n";

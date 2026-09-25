@@ -9,12 +9,11 @@
 | `cli-golden/` | **正向**：全部适用确定性规则 pass，agent-reviewed 规则 unverified | `0` |
 | `cli/` | **负向**：极简 README，多条确定性规则 fail | `1` |
 | `library/` `desktop/` `web-app/` `service/` `knowledge-base/` | 适用性矩阵标本 | 视规则结果而定 |
-| `voicetype/` | **演示 fixture**（非 check 标本）：VoiceType README 改造前/后对照与案例分析，教学用途 | 不参与终验 |
 
 终验命令集只使用 `cli-golden`（正向）与 `cli`（负向）；两者退出码均为测试断言锁定的契约，不是临时观察值。
 
 ## 规则
 
 - fixture 只放检查器需要的最小文件，禁止伪造成可运行的真实项目。
-- `voicetype/` 例外：它是从 `examples/` 迁入的演示素材（含 `yourname` 等显式声明占位与指向目标项目结构的演示链接），用于教学对照，不参与 `check` 回归。
+- 本目录只保留当前测试使用的项目类型样例；未列入目录树的历史演示材料不属于当前交付物。
 - 修改检查器逻辑后必须重跑 `pnpm test`，确认 fixture 预期仍成立。

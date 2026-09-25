@@ -40,7 +40,7 @@
 2. **方法论先于模板** — 基于 fastapi / deno / supabase / huggingface / ollama / tailwind / lobe-chat / fiber 等 8 个 GitHub Trending 范本逐字逐行提炼。
 3. **4 套场景化模板** — minimal · standard · rich · cn-academic，按项目类型挑，不混搭。
 4. **Agent Skill 直接调用** — 一句话让 Claude Code / Codex / Qwen 按方法论产出高分 README。
-5. **before/after 改造案例** — VoiceType 素材从 54 行 0 图改造为 230 行 12 图位（演示 fixture，见 [案例研究](#-案例研究voicetype-readme-改造示例-fixture)）。
+5. **六类项目 fixture** — CLI、库、桌面、Web、服务、知识库均有正向/负向样例，可复验规则行为。
 6. **量化评分 + AI 时代适配** — 覆盖 i18n / LLM 友好 / 无障碍 / 包容性语言 / 默认语言 / 截图自动化 / CI 可复现的 README 方法论。
 
 ---
@@ -130,25 +130,26 @@ pnpm run build     # 构建独立 CLI bundle dist/readme-craft.mjs（内嵌规�
 node scripts/batch-audit.mjs ~/workspace --exclude readme-craft --out /tmp/audit.md [--strict]
 ```
 
-对目录下所有含 README.md 的子项目逐个体检并汇总缺口表；配套完整操作手册（分级处置、修复模式速查、实战坑清单）见 批量审计 Playbook（内部文档），T19 链接检查 job 可复制模板见 [examples/ci-recipes/](./examples/ci-recipes/)。
+对目录下所有含 README.md 的子项目逐个体检并汇总缺口表；T19 链接检查 job 可复制模板见 [examples/ci-recipes/](./examples/ci-recipes/)。审计输出可能包含仓库名与评分，应保存在私有位置，公开分享前先脱敏并核实授权。
 
 ---
 
-## 🏆 同行对照表
+## 🏆 同类工具与方法对照
 
-| 维度 | **readme-craft v2.3** | readme.so | readme-md-generator | common-readme | Art of README |
-|---|---|---|---|---|---|
-| **类型** | 方法论 + Skill | 在线编辑器 | CLI 工具 | 早期规范 | 长文散文 |
-| **方法论系统化** | **19 条铁律** | ✗ | ✗ | 5 段模板 | 散文 |
-| **反模式清单** | **13 条 + 解药** | ✗ | ✗ | ✗ | "Things NOT to do" |
-| **量化评分** | **归一化百分制（v3 起；v2.3.1 为 95 分历史量表）** | ✗ | ✗ | ✗ | ✗ |
-| **AI Agent Skill** | ✓ craft-readme | ✗ | ✗ | ✗ | ✗ |
-| **before/after 案例** | ✓（示例 fixture + 16 项目真实批量战役） | ✗ | ✗ | ✗ | ✗ |
-| **2025-2026 适配** | i18n + a11y + LLM + 包容 + CI | ✗ | ✗ | ✗ | ✗ |
-| **License** | MIT | MIT | MIT | MIT | CC-BY-SA |
-| **最近活跃** | 2026 Q3 持续迭代 | 2025 小改 | 2019 停维护 | 2014 停维护 | 2017 |
+下表按各项目公开说明归纳，反映 **2026-09-25** 可查到的定位；市场变化快，此表是代表性样本，不声称穷尽所有工具。不同工具的评分口径不可直接横比。
 
-> **核心差异**——readme-craft 把"系统方法论 + 反模式 + 量化评分 + AI Skill + 改造案例 + AI 时代适配"做成完整闭环。
+| 工具 | 主要用途 | 与 readme-craft 的关系 |
+|---|---|---|
+| [readme.so](https://github.com/octokatherine/readme.so) | 在线选择、编辑、拖动 README 章节并下载 | 适合快速搭结构；本项目提供规则、审查与持续核验 |
+| [readme-md-generator](https://github.com/kefranabg/readme-md-generator) | 从 `package.json` 和 Git 配置读取默认值的 CLI 生成器 | 适合初始化 Node 项目文档；本项目覆盖跨类型规则与检查 |
+| [readme-ai](https://github.com/eli64s/readme-ai) | 通过 LLM 分析仓库并生成 README | 侧重生成；本项目强调证据约束、显式未核验状态和确定性评分 |
+| [README Health Checker](https://github.com/tahaefekusoglu/Readme-Health-Checker) | CLI + GitHub Action 评分、链接检查、可配置权重、模板与可选 AI 建议 | 是最接近的检查类替代；其可配置评分与 PR 评论能力值得持续对照 |
+| [README Forge](https://github.com/Atypical-Consulting/readme-forge) | 跨组织批量打分、自动补齐和进度面板 | 适合多仓治理；本项目聚焦单仓写作方法、Skill 与离线检查 |
+| [readme-doctor](https://classic.yarnpkg.com/en/package/readme-doctor) | 小型 CLI + Action，提供章节补齐和评分门槛 | 有功能重叠；公开维护信号较弱，需在采用前复核当前源仓库与活跃度 |
+| [standard-readme](https://github.com/RichardLitt/standard-readme) | 面向开源库的规范、示例，并链接 lint 与 generator | 提供成熟结构约定；本项目采用按类型分支、19 条规则和 N/A/未核验模型 |
+| [github-readme-generator](https://github.com/pekral/github-readme-generator) / [readme-crafter-skill](https://github.com/linhai0872/readme-crafter-skill) | Agent Skill 根据仓库证据撰写 README | 与本项目 Skill 直接相邻；本项目另外提供显式规则源、CLI、Action 和 Web 评分页 |
+
+另有 [LintMe 研究原型](https://doi.org/10.1145/3772318.3791597)探索可配置的内容与风格规则；[ReadMe AI Linter](https://docs.readme.com/main/docs/linter)面向 ReadMe 托管文档产品，并非 GitHub 仓库 README 的直接替代。
 
 ---
 
@@ -212,8 +213,8 @@ node scripts/batch-audit.mjs ~/workspace --exclude readme-craft --out /tmp/audit
 |---|---|---|---|
 | **minimal** | ≤80 | CLI / 个人小工具 / 单一脚本 | deno subcommand |
 | **standard** | 200-400 | 后端服务 / Web 框架 / 库 | fastapi / ollama |
-| **rich** | 大型 | GUI 桌面 / 产品类 / AI/ML | whisper-desktop / supabase / lobe-chat |
-| **cn-academic** | 200-400 | 中文知识库 / 方法论 / 教程 | knowledge-base-app / agent-config-manager |
+| **rich** | 大型 | GUI 桌面 / 产品类 / AI/ML | 复杂 GUI、数据产品或 AI/ML 项目 |
+| **cn-academic** | 200-400 | 中文知识库 / 方法论 / 教程 | 中文知识库、研究方法或教程项目 |
 
 [→ 4 套模板](./templates/)
 
@@ -261,36 +262,9 @@ flowchart TB
 
 ---
 
-## 📸 案例研究：VoiceType README 改造（示例 fixture）
+## 🧪 可复验样例
 
-> **素材性质说明**：本案例为**演示 fixture**——改造素材源自历史内部项目，仓库地址与指标
-> 不可溯源；改造前后两份文档保留的是**方法论教学价值**，不是可验证的项目声明。
-> 评分为 **v1 60 分量表下的历史演示值**，与 v2.3 的 95 分量表不可直接比较。
-
-| 维度 | 改造前 | 改造后 |
-|---|---|---|
-| 行数 | 54 | 230+ |
-| 图位 | 0 | 12 |
-| 示例评分（v1 量表） | 15/60 | 55/60 |
-| 安装步骤 | 0 | 3 路 |
-| 触发反模式 | A1+A3+A4+A5+A7+A8 | 0 |
-
-（改造前后完整对照见 tests/fixtures/）
-
----
-
-## 📸 案例研究：16 个兄弟项目批量审计战役（真实案例）
-
-2026-09-23 用本仓工具对 workspace 全部 16 个项目体检并分三批修复——**没有一个 README 被整体重写，确定性 fail 全部清零**，已核验分平均 +8.7（最高 FLOW 40/50）。全程证据可溯（审计报告 + 各项目 commit）：
-
-| 维度 | 战役前 | 战役后 |
-|---|---|---|
-| 确定性 fail（T03/T09/T12/T16/T19） | ~35 项 | **0** |
-| 已核验分均值 | ~27.6 | **~36.3** |
-| T16 alt 合规 | 1/16 | **16/16** |
-| T19 CI 可复现（适用项） | 0/13 | **13/13** |
-
-（详细审计报告与操作手册见 .local/ 私有目录）
+`tests/fixtures/` 覆盖 CLI、库、桌面、Web、服务和知识库六类项目；`cli-golden` 验证成功报告契约，`cli` 作为负向样例验证缺口与退出码。它们是测试样例，不代表真实客户或项目案例。
 
 ---
 
@@ -347,7 +321,6 @@ flowchart TB
   - [opensource.guide](https://opensource.guide/starting-a-project/) — 四个黄金问题
   - [Write the Docs](https://www.writethedocs.org/guide/) — 无障碍 a11y / 去偏见
   - [GitHub Docs · Best practices](https://docs.github.com/en/repositories) — SECURITY.md / CoC 预检项
-- **本地项目范本**：whisper-desktop / knowledge-base-app / iris / agent-config-manager / FLOW / ATLAS
 
 ---
 

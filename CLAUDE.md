@@ -42,9 +42,11 @@ readme-craft 是一套 README 方法论、规则引擎与工具链。核心目�
 
 ## 当前阶段
 
-项目已发布：v3.0.0-alpha.0。GitHub 公开仓库 + Action v1 + Pages 评分页 + npx github: 可用。npm registry 发布待配置 NPM_TOKEN 后推 tag 触发。旧仓库 readme-craft-dev 已归档（private）。
+当前版本：v3.0.0-alpha.0。GitHub 公开仓库、Action v1、Pages 评分页和 `npx github:` 路径已交付。npm registry 尚未发布；启用前须复核 tag/version 与预发布 channel 防护。历史开发仓库已独立设为私有只读归档。
 
 ## 计划索引
 
 - 当前唯一权威计划：[`docs/plans/2026-09-25-midcycle-freeze-review.md`](docs/plans/2026-09-25-midcycle-freeze-review.md)
 - 前序公共发布与隐私收尾计划（已由当前计划承接）：[`docs/plans/2026-09-24-public-release-closeout.md`](docs/plans/2026-09-24-public-release-closeout.md)
+- 项目演进与归档入口：[`docs/archive/README.md`](docs/archive/README.md)
+- 中期冻结必须遵循：[`docs/archive/mid-cycle-freeze-standard.md`](docs/archive/mid-cycle-freeze-standard.md)

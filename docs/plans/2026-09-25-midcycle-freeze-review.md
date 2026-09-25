@@ -1,7 +1,7 @@
 ---
 title: Mid-cycle freeze review and archive readiness
 date: 2026-09-25
-status: active
+status: completed-review-freeze-blocked
 scope: current readme-craft product and repository only
 ---
 
@@ -48,4 +48,10 @@ Review the existing readme-craft product and repository against its stated purpo
 
 ## Review snapshot and status
 
-Started 2026-09-25. Remote `origin/main` was already current after `git pull --ff-only`. The working tree contained a modified `CLAUDE.md` and untracked `docs/`; these pre-existing changes are preserved. The repository has a previous public release closeout plan and eight ignored `.local/` records. Competitor research and source review are in progress.
+Completed 2026-09-25. Remote `origin/main` was current after `git pull --ff-only`; `dev` refs were fetched read-only for history review. The worktree is based on Node v24.15.0 / pnpm 10.17.1. Review fixed malformed preview requests/path escapes, Skill replace symlink traversal, malformed review YAML crashes, and repository-link validation outside-root/invalid-anchor handling; updated stale/public-facing claims; added regression coverage and public/private archive indexes. Competitor review is a dated representative sample, not an exhaustive global inventory.
+
+Validation: `pnpm validate`; `pnpm test` (147/147); `pnpm typecheck`; `pnpm web:test` (6/6); `pnpm check:generated`; `pnpm run build`; `pnpm web:build`; `npm pack --dry-run --json` (13 files, `.local/` excluded); `git diff --check` all passed.
+
+Review deliverables: [`docs/archive/2026-09-25-review.md`](../archive/2026-09-25-review.md), [`docs/archive/project-history.md`](../archive/project-history.md), [`docs/archive/README.md`](../archive/README.md), [`docs/archive/mid-cycle-freeze-standard.md`](../archive/mid-cycle-freeze-standard.md). Private source inventory and accessible commit snapshot are in ignored `.local/archive/`.
+
+The review is complete; project sealing is not. Two owner decisions remain: whether to harden/retain the unpublished npm workflow and how to handle the already-public Git history and license attribution. No workflow, publication, deletion, or history rewrite was performed. Do not mark the repository archived until the owner decision and risk acceptance are recorded.

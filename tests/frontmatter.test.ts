@@ -1,4 +1,4 @@
-// T15 frontmatter YAML 合法性（2026-09-23 FLOW 事故防复发）
+// T15 frontmatter YAML 合法性回归检查。
 // 事故形态：badge 行被误插进 frontmatter，行首 `!` 被 YAML 解析为 tag 语法，
 // GitHub 渲染报 "Error in user YAML: ... scanning a tag"。
 import { test } from "node:test";
