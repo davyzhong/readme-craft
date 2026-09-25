@@ -15,6 +15,7 @@ readme-craft 是一套 README 方法论、规则引擎与工具链。核心目�
 - `tests/`：测试与六类项目 fixture。
 - `web/`：纯前端本地评分页。
 - `.local/`：**私有目录**（.gitignore 排除，不推送到 GitHub）。存放审计报告、内部计划、个人笔记等含隐私内容。
+- `docs/plans/`：仅存放可公开、已脱敏的项目计划；含隐私的审计细节留在 `.local/`，不得复制进公开计划。
 
 目录名使用小写 kebab-case。
 
@@ -42,3 +43,8 @@ readme-craft 是一套 README 方法论、规则引擎与工具链。核心目�
 ## 当前阶段
 
 项目已发布：v3.0.0-alpha.0。GitHub 公开仓库 + Action v1 + Pages 评分页 + npx github: 可用。npm registry 发布待配置 NPM_TOKEN 后推 tag 触发。旧仓库 readme-craft-dev 已归档（private）。
+
+## 计划索引
+
+- 当前唯一权威计划：[`docs/plans/2026-09-25-midcycle-freeze-review.md`](docs/plans/2026-09-25-midcycle-freeze-review.md)
+- 前序公共发布与隐私收尾计划（已由当前计划承接）：[`docs/plans/2026-09-24-public-release-closeout.md`](docs/plans/2026-09-24-public-release-closeout.md)
