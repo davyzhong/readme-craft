@@ -2,6 +2,18 @@
 
 本项目显著变更记录。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+规则数量、评分口径与版本号以 `rules.yaml` 为唯一事实源；本文件只记录叙述性变更，
+不作为事实源。v3.0 之前的版本号沿用当时的 README 声明，`v3.0.0-alpha.0` 起由
+`rules.yaml` 与 `package.json` 共同确定。
+
+## [Unreleased]
+
+### Changed
+
+- 加固 npm 发布 workflow：发布前校验 tag 与 `package.json` version 一致；预发布版本强制走
+  `--tag next`，不再占用 default 通道；发布前执行完整质量门禁。
+- 记录 owner 决定台账：npm 发布硬化、公开 Git 历史与许可证归属的风险接受、维护冻结。
+
 ## [3.0.0-alpha.0] — 2026-09-23
 
 ### Added
@@ -24,3 +36,62 @@
 - T15 从「必须 frontmatter」改为「语义标题 + 代码块优先；结构化元数据可选」。
 - T19 从「CI 自愈」重写为「CI 可复现与可诊断」。
 - 四套模板占位符统一为显式 snake_case；移除伪数据。
+
+## [2.3] — 2026-09-21
+
+### Added
+
+- T19 CI 自愈（结构轴）：lockfile 入仓库、CI 安装方式、README 链接检查。
+- A13 反模式：workflow 不自愈。
+
+### Changed
+
+- 评分量表 90 → 95。
+
+> 注：T19 的初版建议（用 `npm install` 替代 `npm ci`、移除 `cache: npm`）在 v3.0-alpha 中被判定为
+> 与业界可复现实践冲突，已重写为「CI 可复现与可诊断」。
+
+## [2.2] — 2026-09-21
+
+### Added
+
+- T18 截图自动化（视觉轴）：截图必须由脚本产生，禁止人工维护。
+- A12 反模式：截图手工维护。
+
+### Changed
+
+- 评分量表 85 → 90。
+
+## [2.1] — 2026-09-21
+
+### Added
+
+- T17 默认语言策略：按目标用户群体反推默认语言。
+- A11 反模式：默认语言错位。
+
+### Changed
+
+- 评分量表 80 → 85。
+- 同步 `skill/SKILL.md` 到 17 铁律 + 11 反模式口径。
+
+## [2] — 2026-09-21
+
+### Added
+
+- T13 i18n 规范、T14 包容性语言、T15 LLM 友好元数据、T16 无障碍 a11y。
+- A9 反模式：零 i18n 但有海外用户；A10 反模式：emoji 满屏无实质。
+- 同行对标章节、`assets/banner.svg`。
+
+### Changed
+
+- 评估轴从 3 条扩到 5 条（新增 AI 轴、包容轴）。
+- 铁律 12 → 16，反模式 8 → 10，评分量表 60 → 80。
+
+## [1.0] — 2026-09-21
+
+### Added
+
+- 初始方法论：12 条铁律（T1-T12）、8 条反模式（A1-A8）、60 分评分量表、适用边界决策表。
+- 四套模板：`minimal` / `standard` / `rich` / `cn-academic`。
+- `craft-readme` Skill 初版。
+- MouthType before/after 案例。

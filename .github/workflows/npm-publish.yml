@@ -1,5 +1,11 @@
 # 当推 v* tag 时自动发布到 npm
 # 前置：在仓库 Settings → Secrets → Actions 添加 NPM_TOKEN（npmjs.com 的 Access Token）
+#
+# 发布防护（2026-09-27 加固，见 docs/plans/2026-09-25-midcycle-freeze-review.md 的 P0 门槛）：
+#   1. tag 必须与 package.json version 严格一致，否则中止；
+#   2. 预发布版本走 `--tag next`，绝不占用 default 通道；
+#   3. 稳定版才允许写入 default；
+#   4. 发布前执行完整门禁，任一失败即中止。
 name: npm publish
 
 on:
@@ -19,8 +25,40 @@ jobs:
         with:
           node-version-file: .node-version
           registry-url: https://registry.npmjs.org
+
+      - name: Verify tag matches package version
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME#v}"
+          VER="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$VER" ]; then
+            echo "::error::tag $TAG does not match package.json version $VER"
+            exit 1
+          fi
+          echo "tag $TAG matches package.json version $VER"
+
       - run: pnpm install --frozen-lockfile
+
+      - name: Verify quality gates
+        run: |
+          set -euo pipefail
+          pnpm typecheck
+          pnpm test
+          pnpm validate
+          pnpm check:generated
+
       - run: pnpm run build
-      - run: npm publish --access public
+
+      - name: Publish
+        run: |
+          set -euo pipefail
+          VER="$(node -p "require('./package.json').version")"
+          if [[ "$VER" == *-* ]]; then
+            echo "prerelease $VER -> publishing to the 'next' dist-tag"
+            npm publish --access public --tag next
+          else
+            echo "stable $VER -> publishing to the default dist-tag"
+            npm publish --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

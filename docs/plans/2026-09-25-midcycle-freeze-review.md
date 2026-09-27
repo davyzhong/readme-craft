@@ -1,8 +1,9 @@
 ---
 title: Mid-cycle freeze review and archive readiness
 date: 2026-09-25
-status: completed-review-freeze-blocked
+status: completed
 scope: current readme-craft product and repository only
+resolved_by: ../../docs/decisions/2026-09-27-owner-decisions.md
 ---
 
 # Mid-cycle Freeze Review and Archive Readiness
@@ -55,3 +56,9 @@ Validation: `pnpm validate`; `pnpm test` (147/147); `pnpm typecheck`; `pnpm web:
 Review deliverables: [`docs/archive/2026-09-25-review.md`](../archive/2026-09-25-review.md), [`docs/archive/project-history.md`](../archive/project-history.md), [`docs/archive/README.md`](../archive/README.md), [`docs/archive/mid-cycle-freeze-standard.md`](../archive/mid-cycle-freeze-standard.md). Private source inventory and accessible commit snapshot are in ignored `.local/archive/`.
 
 The review is complete; project sealing is not. Two owner decisions remain: whether to harden/retain the unpublished npm workflow and how to handle the already-public Git history and license attribution. No workflow, publication, deletion, or history rewrite was performed. Do not mark the repository archived until the owner decision and risk acceptance are recorded.
+
+**Resolution (2026-09-27):** both owner decisions are recorded in
+[`docs/decisions/2026-09-27-owner-decisions.md`](../decisions/2026-09-27-owner-decisions.md).
+The npm publish workflow is hardened (D-001) and the public history plus license attribution are
+accepted as-is with the risk documented (D-002). The freeze block is cleared; the product range is
+in maintenance freeze. No Git history was rewritten and no package was published.
