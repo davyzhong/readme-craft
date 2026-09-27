@@ -104,11 +104,22 @@ function renderResults(rows: Row[]): string {
       : `总分：归一化 ${verifiedMaximum === 0 ? "0.0" : ((verifiedScore / verifiedMaximum) * 100).toFixed(1)}/100` +
         `（原始得分 ${verifiedScore}/${verifiedMaximum} 适用满分）`;
 
+  const heuristicIds = rows
+    .filter((r) => r.score !== null && r.rule.evaluator === "deterministic")
+    .map((r) => r.rule.id);
+
+  const boundary =
+    heuristicIds.length > 0
+      ? `<p class="boundary">检测边界：${heuristicIds.map((id) => escapeHtml(id)).join("、")} 为启发式检查，` +
+        `只覆盖结构面（数量、命名、存在性、格式），其结果不等于语义质量判断。</p>`
+      : "";
+
   return (
     `<table><thead><tr>` +
     `<th>#</th><th>铁律</th><th>轴</th><th>状态</th><th>得分</th><th>说明</th>` +
     `</tr></thead><tbody>${lines}</tbody></table>` +
-    `<p class="summary">${escapeHtml(summary)}</p>`
+    `<p class="summary">${escapeHtml(summary)}</p>` +
+    boundary
   );
 }
 

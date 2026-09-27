@@ -64,6 +64,9 @@ export function validateSpecSemantics(spec: Spec): string[] {
     if (rule.evaluator === "deterministic" && typeof rule.browser_safe !== "boolean") {
       problems.push(`${rule.id} 是 deterministic 规则，必须显式声明 browser_safe`);
     }
+    if (rule.evaluator === "deterministic" && !rule.detection) {
+      problems.push(`${rule.id} 是 deterministic 规则，必须声明 detection 说明检测手段与边界`);
+    }
     if (rule.evaluator === "agent-reviewed" && rule.browser_safe === true) {
       problems.push(`${rule.id} 是 agent-reviewed 规则，browser_safe 不得为 true`);
     }

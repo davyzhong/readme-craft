@@ -124,6 +124,28 @@ pnpm run build     # 构建独立 CLI bundle dist/readme-craft.mjs（内嵌规�
 
 `check` 的对外报告只展示归一化百分制 + 适用项数 + 未核验项数；agent-reviewed 规则默认 `unverified`，可用 `--review <yaml>` 合并 Agent 评分后再输出总分。退出码：`0` 成功、`1` 规则/一致性失败、`2` 参数/环境错误。
 
+### 检测边界：确定性分数不等于语义质量
+
+所有 `deterministic` 规则都基于**结构面**的静态特征（数量、命名、存在性、格式），因此报告会在
+结尾显式列出参与的启发式规则，并提示其结果不等于语义质量判断：
+
+```text
+检测边界：T03、T10、T12、T15、T16 为启发式检查，只覆盖结构面（数量、命名、存在性、格式），
+其结果不等于语义质量判断；每条的检测手段与不覆盖范围见 rules.yaml 的 detection 字段。
+```
+
+`rules.yaml` 中每条 `deterministic` 规则都必须声明 `detection`（由 `pnpm validate` 强制），逐条写明
+该检查实际使用的手段与**它不覆盖什么**。例如 T03 只统计 badge 数量与是否来自 shields.io，
+不判断 badge 指向的检查或版本是否真实可用。JSON 报告里对应 `rules[].heuristic` 与
+`rules[].detection`，顶层 `heuristicRuleIds` 给出汇总。价值主张、文案质量、竞品比较等语义判断
+一律留给 `agent-reviewed` 规则，不伪装成自动分数。
+
+**仓库结构说明**：`skill/` 下的 `METHODOLOGY.md`、`checklist.md`、`templates` 是指向根目录的**受控软链**，
+用于让 Skill 包在安装后能以平铺布局访问资源，同时避免同一份内容在两处漂移；`pack-skill` 产出的
+`dist/craft-readme/` 是这些资源的真实副本。`dist/` 整体被 `.gitignore` 排除，唯独保留
+`dist/readme-craft.mjs`——它是 `npx github:davyzhong/readme-craft` 这类无克隆用法所需的独立 CLI bundle，
+必须随仓库分发才能工作。
+
 **批量审计一批项目**（v3.0-alpha 实战沉淀）：
 
 ```bash

@@ -82,6 +82,11 @@
           "items": { "type": "string", "minLength": 1 }
         },
         "evaluator": { "$ref": "#/$defs/evaluator" },
+        "detection": {
+          "type": "string",
+          "minLength": 1,
+          "description": "deterministic 规则必须声明：说明该检查实际使用的手段及其无法覆盖的语义面，避免把结构化检测包装为语义保证"
+        },
         "browser_safe": {
           "type": "boolean",
           "description": "是否可在浏览器中运行（仅依赖 Markdown 字符串）；deterministic 规则必须声明，agent-reviewed 不得为 true"

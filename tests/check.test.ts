@@ -337,3 +337,44 @@ test("tests/fixtures/cli 是负向 fixture：exit 1 为预期", () => {
   const res = runCli(["check", path.join(repoRoot, "tests/fixtures/cli"), "--type", "cli"]);
   assert.equal(res.status, 1, `${res.stdout}\n${res.stderr}`);
 });
+
+// ---------- 检测边界披露（P1：不得把启发式检测包装为语义保证） ----------
+
+test("deterministic rules disclose whether the check is heuristic", () => {
+  const dir = tmpProject("# T\n\n## Installation\n\n```bash\nnpm i\n```\n\n| a | b |\n|---|---|\n| 1 | 2 |\n");
+  const report = checkProject(dir, { types: ["cli"] });
+  const det = report.rules.filter((r) => r.source === "deterministic");
+  assert.ok(det.length > 0, "fixture should produce deterministic results");
+  for (const r of det) {
+    assert.equal(typeof r.heuristic, "boolean", `${r.id} must declare heuristic`);
+  }
+});
+
+test("report lists the heuristic rule ids that actually contributed a score", () => {
+  const dir = tmpProject("# T\n\n## Installation\n\n```bash\nnpm i\n```\n");
+  const report = checkProject(dir, { types: ["cli"] });
+  assert.ok(Array.isArray(report.heuristicRuleIds));
+  // na / unverified 的规则没有分数，不应出现在边界提示里
+  const scored = report.rules.filter((r) => r.heuristic && r.score !== null).map((r) => r.id);
+  assert.deepEqual([...report.heuristicRuleIds].sort(), scored.sort());
+  assert.ok(report.heuristicRuleIds.length > 0, "fixture should produce scored heuristic rules");
+});
+
+test("text report states that heuristic checks are not semantic guarantees", () => {
+  const dir = tmpProject("# T\n\n## Installation\n\n```bash\nnpm i\n```\n");
+  const report = checkProject(dir, { types: ["cli"] });
+  assert.match(report.text, /启发式/);
+  assert.match(report.text, /不等于语义/);
+});
+
+test("heuristic disclosure appears in the JSON contract too", () => {
+  const dir = tmpProject("# T\n\n## Installation\n\n```bash\nnpm i\n```\n");
+  const json = JSON.parse(emitReport(checkProject(dir, { types: ["cli"] }), "json"));
+  assert.ok(Array.isArray(json.heuristicRuleIds));
+  for (const r of json.rules) {
+    assert.equal(typeof r.heuristic, "boolean");
+  }
+  const det = json.rules.find((r: { source: string }) => r.source === "deterministic");
+  assert.ok(det && typeof det.detection === "string" && det.detection.length > 0,
+    "deterministic results must carry the detection note");
+});

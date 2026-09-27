@@ -33,6 +33,13 @@ export interface RuleResult {
   evidence: string[];
   reason: string;
   source: "deterministic" | "agent-reviewed";
+  /**
+   * 该 deterministic 检查是否只能覆盖结构面。true 表示结果来自静态特征匹配，
+   * 不等于语义质量判断；agent-reviewed 规则恒为 false。
+   */
+  heuristic: boolean;
+  /** 来自 rules.yaml 的检测手段说明（仅 deterministic 规则） */
+  detection?: string;
 }
 
 export interface CheckReport {
@@ -44,6 +51,8 @@ export interface CheckReport {
   verifiedMaximum: number;
   unverifiedCount: number;
   errors: string[];
+  /** 只覆盖结构面的确定性检查 ID；非空即提示分数不可当语义保证 */
+  heuristicRuleIds: string[];
   /** 文本形态报告；JSON 输出时不包含 */
   text: string;
 }
@@ -328,6 +337,10 @@ export function checkProject(projectRoot: string, opts: CheckOptions): CheckRepo
       evaluator: rule.evaluator,
       maximum: 5,
       source: rule.evaluator,
+      // deterministic 检查只覆盖结构面：所有 deterministic 规则都按启发式披露，
+      // 具体手段与边界见 rules.yaml 的 detection 字段。
+      heuristic: rule.evaluator === "deterministic",
+      ...(rule.detection ? { detection: rule.detection } : {}),
     } as const;
 
     if (resolution.ambiguous) {
@@ -366,6 +379,7 @@ export function checkProject(projectRoot: string, opts: CheckOptions): CheckRepo
   const verifiedScore = scoredResults.reduce((sum, r) => sum + (r.score ?? 0), 0);
   const verifiedMaximum = scoredResults.length * 5;
   const unverifiedCount = results.filter((r) => r.status === "unverified").length;
+  const heuristicRuleIds = results.filter((r) => r.heuristic && r.score !== null).map((r) => r.id);
 
   const report: CheckReport = {
     specVersion: spec.version,
@@ -376,6 +390,7 @@ export function checkProject(projectRoot: string, opts: CheckOptions): CheckRepo
     verifiedMaximum,
     unverifiedCount,
     errors,
+    heuristicRuleIds,
     text: "",
   };
   report.text = renderText(report, resolution.source);
@@ -397,6 +412,11 @@ function renderText(report: CheckReport, source: string): string {
   } else {
     const normalized = report.verifiedMaximum === 0 ? 0 : (report.verifiedScore / report.verifiedMaximum) * 100;
     lines.push(`总分：归一化 ${normalized.toFixed(1)}/100（原始得分 ${report.verifiedScore}/${report.verifiedMaximum} 适用满分）`);
+  }
+  if (report.heuristicRuleIds.length > 0) {
+    lines.push("");
+    lines.push(`检测边界：${report.heuristicRuleIds.join("、")} 为启发式检查，只覆盖结构面（数量、命名、存在性、格式），`);
+    lines.push("其结果不等于语义质量判断；每条的检测手段与不覆盖范围见 rules.yaml 的 detection 字段。");
   }
   if (report.errors.length > 0) {
     lines.push(`错误：${report.errors.join("；")}`);

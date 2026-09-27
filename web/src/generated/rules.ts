@@ -22,6 +22,8 @@ export interface ProjectedRule {
   appliesTo: ProjectedProjectType[];
   thresholds: { partial: number; pass: number };
   browserSafe: boolean;
+  /** 该确定性检查的检测手段说明；agent-reviewed 或缺省时为 null */
+  detection: string | null;
 }
 
 export const RULES: ProjectedRule[] = [
@@ -33,6 +35,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T02",
@@ -42,6 +45,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T03",
@@ -51,6 +55,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 3 },
     browserSafe: true,
+    detection: "按 Markdown 图片语法统计 badge 数量并匹配 shields.io 域名；只反映结构与来源，不判断 badge 是否指向真实可用的检查或版本。",
   },
   {
     id: "T04",
@@ -60,6 +65,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 3 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T05",
@@ -69,6 +75,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T06",
@@ -78,6 +85,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: "统计 README 中的图片与视频引用数量并检查 alt 是否非空；不判断截图内容是否与当前版本一致，也不评估视觉质量。",
   },
   {
     id: "T07",
@@ -87,6 +95,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T08",
@@ -96,6 +105,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T09",
@@ -105,6 +115,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 3 },
     browserSafe: true,
+    detection: "检测是否存在 Mermaid 代码块或图片引用的架构图；不判断图的语义正确性。",
   },
   {
     id: "T10",
@@ -114,6 +125,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 1, pass: 3 },
     browserSafe: true,
+    detection: "统计表格数量与表头列数；不判断表格内容是否真实构成差异化对比。",
   },
   {
     id: "T11",
@@ -123,6 +135,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 1, pass: 3 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T12",
@@ -132,6 +145,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: "检测治理文件是否存在（LICENSE / CONTRIBUTING / CODE_OF_CONDUCT / SECURITY.md）及 README 是否链接；不判断文件内容是否充分。",
   },
   {
     id: "T13",
@@ -141,6 +155,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 1, pass: 3 },
     browserSafe: false,
+    detection: "检测 BCP 47 命名的多语言 README 文件与显式支持策略声明；不判断所选默认语言是否匹配真实用户群体。",
   },
   {
     id: "T14",
@@ -150,6 +165,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T15",
@@ -159,6 +175,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 3 },
     browserSafe: false,
+    detection: "按关键词与结构特征统计语义化章节标题与代码块；不判断文案是否真正便于 LLM 理解。",
   },
   {
     id: "T16",
@@ -168,6 +185,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: true,
+    detection: "统计缺失 alt 的图像与缺失表头的表格；只覆盖可静态检测的 a11y 面，不覆盖对比度、焦点顺序或动态内容。",
   },
   {
     id: "T17",
@@ -177,6 +195,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 1, pass: 3 },
     browserSafe: false,
+    detection: null,
   },
   {
     id: "T18",
@@ -186,6 +205,7 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: "检测截图自动化 workflow 与截图文件命名模式；不执行截图，也不判断截图与代码是否同步。",
   },
   {
     id: "T19",
@@ -195,5 +215,6 @@ export const RULES: ProjectedRule[] = [
     appliesTo: ["cli", "library", "desktop", "web-app", "service", "knowledge-base"],
     thresholds: { partial: 2, pass: 4 },
     browserSafe: false,
+    detection: "检测 lockfile 是否入库、CI 是否使用 frozen install、运行时版本是否固定；不执行 CI，也不判断依赖是否可复现安装成功。",
   },
 ];

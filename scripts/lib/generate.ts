@@ -136,6 +136,7 @@ export function renderRulesProjection(spec: Spec): string {
       `    appliesTo: [${appliesTo}],\n` +
       `    thresholds: { partial: ${r.thresholds.partial}, pass: ${r.thresholds.pass} },\n` +
       `    browserSafe: ${r.browser_safe === true},\n` +
+      `    detection: ${JSON.stringify(r.detection ?? null)},\n` +
       `  },`
     );
   });
@@ -163,6 +164,8 @@ export interface ProjectedRule {
   appliesTo: ProjectedProjectType[];
   thresholds: { partial: number; pass: number };
   browserSafe: boolean;
+  /** 该确定性检查的检测手段说明；agent-reviewed 或缺省时为 null */
+  detection: string | null;
 }
 
 export const RULES: ProjectedRule[] = [

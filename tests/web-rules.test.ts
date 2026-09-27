@@ -46,7 +46,7 @@ test("browserSafe flags mirror rules.yaml browser_safe declarations", () => {
 });
 
 test("projection contains only browser-needed fields", () => {
-  const allowed = new Set(["id", "title", "axis", "evaluator", "appliesTo", "thresholds", "browserSafe"]);
+  const allowed = new Set(["id", "title", "axis", "evaluator", "appliesTo", "thresholds", "browserSafe", "detection"]);
   for (const projected of RULES) {
     for (const key of Object.keys(projected)) {
       assert.ok(allowed.has(key), `投影字段 ${key} 超出浏览器所需范围`);
@@ -78,4 +78,15 @@ test("parseSpec rejects agent-reviewed rule with browser_safe: true", () => {
   const spec = loadSpec();
   const yaml = `version: "${spec.version}"\nrules:\n  - id: T01\n    title: x\n    axis: content\n    applies_to: [cli]\n    intent: x\n    scores: { "0": a, "1": b, "2": c, "3": d, "4": e, "5": f }\n    evidence: [x]\n    evaluator: agent-reviewed\n    browser_safe: true\n    thresholds: { partial: 1, pass: 2 }\nantiPatterns: []\n`;
   assert.throws(() => parseSpec(yaml), SemanticError);
+});
+
+test("browser projection carries the detection note for deterministic rules", () => {
+  for (const r of RULES) {
+    if (r.evaluator === "deterministic") {
+      assert.equal(typeof r.detection, "string", `${r.id} must project a detection note`);
+      assert.ok((r.detection as string).length > 0);
+    } else {
+      assert.equal(r.detection, null);
+    }
+  }
 });

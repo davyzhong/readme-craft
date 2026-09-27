@@ -44,6 +44,11 @@ export interface Rule {
    * deterministic 规则必须显式声明；agent-reviewed 规则不得为 true。
    */
   browser_safe?: boolean;
+  /**
+   * deterministic 规则必须显式声明：说明该检查实际使用的手段，以及它无法覆盖的语义面。
+   * 用于把「结构化检测」与「语义质量」区分开，避免把启发式得分当作语义保证。
+   */
+  detection?: string;
 }
 
 export interface AntiPattern {
