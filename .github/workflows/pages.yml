@@ -1,0 +1,85 @@
+# 部署纯前端评分页到 GitHub Pages。
+#
+# 契约：
+#   - 只发布 web/dist/ 与仓库根的 index.html（Pages 需要的入口）；
+#   - 不发布 .local/、dist/craft-readme/、node_modules/ 等构建中间产物；
+#   - 确定性构建：同一份源码重建应产生零 diff，diff 非空即说明产物与源码不同步。
+#
+# 触发：main 分支上影响 Web 页或规则事实源的改动。
+# 发布属公开操作，部署前由 workflow 自身执行全量质量门禁。
+
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'scripts/web-build.ts'
+      - 'scripts/lib/content-checks.ts'
+      - 'scripts/lib/generate.ts'
+      - 'rules.yaml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只允许一个部署，避免并发推送冲突
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Frozen install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Generated blocks are fresh
+        run: pnpm check:generated
+
+      - name: Web tests
+        run: pnpm web:test
+
+      - name: Build web bundle
+        run: pnpm web:build
+
+      - name: Deterministic build check
+        run: |
+          # 同一源码重建两次应完全一致；不一致说明构建不具确定性
+          cp web/dist/app.js /tmp/app-first.js
+          pnpm web:build
+          diff -q /tmp/app-first.js web/dist/app.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
