@@ -40,7 +40,7 @@
 2. **方法论先于模板** — 基于 fastapi / deno / supabase / huggingface / ollama / tailwind / lobe-chat / fiber 等 8 个 GitHub Trending 范本逐字逐行提炼。
 3. **4 套场景化模板** — minimal · standard · rich · cn-academic，按项目类型挑，不混搭。
 4. **Agent Skill 直接调用** — 一句话让 Claude Code / Codex / Qwen 按方法论产出高分 README。
-5. **六类项目 fixture** — CLI、库、桌面、Web、服务、知识库均有正向/负向样例，可复验规则行为。
+5. **六类项目 fixture** — CLI、库、桌面、Web、服务、知识库均有正向/负向样例，可复验规则行为。类型判定优先级与已知边界（monorepo / SDK / 混合型 / 基础设施仓）见 [`docs/project-types.md`](./docs/project-types.md)。
 6. **量化评分 + AI 时代适配** — 覆盖 i18n / LLM 友好 / 无障碍 / 包容性语言 / 默认语言 / 截图自动化 / CI 可复现的 README 方法论。
 
 ---
@@ -96,7 +96,7 @@ git add README.md && git commit -m "docs: README 按 readme-craft 方法论重�
 | **3 · `@/path` 引用** | 在 Agent 提示词里加 `@/path/to/readme-craft/skill/SKILL.md` | 不想改文件系统 |
 
 > **Web 评分页**已上线：<https://davyzhong.github.io/readme-craft/>（粘贴 README + 显式选类型即可评分，内容不离开浏览器）；本地运行 `pnpm web:preview`。
-> **GitHub Action** 已发布：`davyzhong/readme-craft@v1`（只读封装 `check`，输出已核验得分/适用满分/未核验项数/JSON 报告路径；无 PR 回写、无 token 需求）。Marketplace 收录需仓库页面手动一次操作（可选）。
+> **GitHub Action** 已发布：`davyzhong/readme-craft@v1`（只读封装 `check`，输出已核验得分/适用满分/未核验项数/JSON 报告路径；无 PR 回写、无 token 需求）。消费者仓库的最小接入 workflow 见 [`examples/ci-recipes/readme-check.consumer.yml`](./examples/ci-recipes/readme-check.consumer.yml)。发布前/升级 Action 后可用 `node scripts/action-rehearsal.mjs` 以消费者视角演练入口契约（不修改本仓 CI）。Marketplace 收录需仓库页面手动一次操作（可选）。
 
 ---
 

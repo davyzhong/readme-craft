@@ -8,11 +8,29 @@
 
 ## [Unreleased]
 
+### Added
+
+- 启发式检测边界披露：`rules.yaml` 每条 `deterministic` 规则新增 `detection` 字段（由 `validate`
+  强制），写明该检查实际使用的手段与不覆盖的语义面；`check` 报告新增 `heuristicRuleIds` 与
+  `rules[].heuristic` / `rules[].detection`，文本报告与 Web 评分页输出边界提示。
+- `review.schema.json`：Agent review 文件的 JSON Schema（编辑器可补全）；`check` 校验可选的
+  `specVersion`（给出时须与 `rules.yaml` 一致）并显式拒绝未知字段。
+- `scripts/action-rehearsal.mjs`：以消费者仓库视角演练 Action 入口契约（不修改本仓 CI），
+  用于发布前/升级后的人工验收。
+- `examples/ci-recipes/readme-check.consumer.yml`：消费者仓库接入 Action 的最小 workflow 配方。
+- `docs/project-types.md`：项目类型判定优先级、六类判据，以及 monorepo / SDK / 混合型 /
+  基础设施仓等未覆盖形态与绕过方式。
+- `docs/decisions/2026-09-27-owner-decisions.md`：owner 决定台账（npm 发布硬化、公开历史与
+  许可证归属的风险接受、维护冻结）。
+
 ### Changed
 
 - 加固 npm 发布 workflow：发布前校验 tag 与 `package.json` version 一致；预发布版本强制走
   `--tag next`，不再占用 default 通道；发布前执行完整质量门禁。
-- 记录 owner 决定台账：npm 发布硬化、公开 Git 历史与许可证归属的风险接受、维护冻结。
+- `skill/` 的受控软链与 `dist/readme-craft.mjs` 的 `.gitignore` 例外在 README 中说明。
+- 冻结状态文档化：`docs/archive/2026-09-25-review.md` 状态改为 completed 并更新冻结结论，
+  `docs/plans/2026-09-25-midcycle-freeze-review.md` 增加 `resolved_by` 指向决定台账。
+- `CHANGELOG.md` 补齐 v1.0 → v2.3 历史条目。
 
 ## [3.0.0-alpha.0] — 2026-09-23
 

@@ -76,3 +76,21 @@ test("action.yml 声明只读契约", () => {
   assert.ok(!/pull-requests:\s*write|contents:\s*write/.test(yml), "action.yml 不得声明写权限");
   assert.ok(yml.includes("runs:"), "action.yml 缺 runs");
 });
+
+test("action-rehearsal script passes against the built-in cli fixture", () => {
+  const script = path.join(repoRoot, "scripts", "action-rehearsal.mjs");
+  assert.ok(existsSync(script), "rehearsal script must exist");
+  const res = spawnSync(process.execPath, [script, "--expect-exit", "1"], { encoding: "utf8" });
+  assert.equal(res.status, 0, `rehearsal should pass; stdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
+  assert.match(res.stdout, /演练通过/);
+});
+
+test("consumer workflow recipe declares read-only permissions and no secrets", () => {
+  const recipe = path.join(repoRoot, "examples", "ci-recipes", "readme-check.consumer.yml");
+  assert.ok(existsSync(recipe));
+  const text = readFileSync(recipe, "utf8");
+  assert.match(text, /contents:\s*read/);
+  assert.ok(!/secrets\./.test(text), "consumer recipe must not require secrets");
+  assert.ok(!/pull-requests:\s*write/.test(text), "recipe must not request write scopes");
+  assert.match(text, /davyzhong\/readme-craft@v1/);
+});

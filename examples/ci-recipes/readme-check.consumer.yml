@@ -1,0 +1,41 @@
+# 消费者仓库接入 readme-craft Action 的最小 workflow。
+#
+# 复制到目标仓库 .github/workflows/readme-check.yml，按需调整 path / type。
+# 权限说明：Action 自身只读，不回写 PR、不需要 token；contents: read 由调用方声明。
+#
+# type 留空时 CLI 会按 manifest 与目录结构自动探测；探测不唯一时相关规则记为
+# unverified 且不输出总分，这是预期行为，不是失败。
+
+name: readme check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Readme check
+        id: readme
+        uses: davyzhong/readme-craft@v1
+        with:
+          path: .
+          # type: cli | library | desktop | web-app | service | knowledge-base
+          # strict: true    # 把 partial 也计为失败
+
+      - name: Summary
+        run: |
+          echo "已核验得分 ${{ steps.readme.outputs.verified-score }}/${{ steps.readme.outputs.verified-maximum }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "未核验 ${{ steps.readme.outputs.unverified-count }} 项（由 Skill/Agent 补充后合并 review 文件可解锁总分）" >> "$GITHUB_STEP_SUMMARY"
+          echo "完整报告：${{ steps.readme.outputs.report-path }}" >> "$GITHUB_STEP_SUMMARY"

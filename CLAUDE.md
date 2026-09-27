@@ -48,5 +48,7 @@ readme-craft 是一套 README 方法论、规则引擎与工具链。核心目�
 
 - 当前唯一权威计划：[`docs/plans/2026-09-25-midcycle-freeze-review.md`](docs/plans/2026-09-25-midcycle-freeze-review.md)
 - 前序公共发布与隐私收尾计划（已由当前计划承接）：[`docs/plans/2026-09-24-public-release-closeout.md`](docs/plans/2026-09-24-public-release-closeout.md)
+- owner 决定台账（P0 门槛处置与风险接受）：[`docs/decisions/2026-09-27-owner-decisions.md`](docs/decisions/2026-09-27-owner-decisions.md)
 - 项目演进与归档入口：[`docs/archive/README.md`](docs/archive/README.md)
 - 中期冻结必须遵循：[`docs/archive/mid-cycle-freeze-standard.md`](docs/archive/mid-cycle-freeze-standard.md)
+- 项目类型判定与适用边界：[`docs/project-types.md`](docs/project-types.md)
