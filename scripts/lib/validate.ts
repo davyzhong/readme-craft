@@ -116,8 +116,22 @@ export function checkVersionConsistency(root: string, spec: Spec): Issue[] {
 const DRIFT_PATTERN = /16 条铁律|17 条铁律|18 条铁律|80 分|85 分|90 分/;
 const HISTORY_LINE = /历史|演进/;
 const HISTORY_HEADING = /历史|演进|升级摘要/;
-/** CHANGELOG 每一行都是历史记录，整体豁免口径漂移检查 */
-const DRIFT_EXEMPT_FILES = new Set(["CHANGELOG.md"]);
+/**
+ * CHANGELOG 每一行都是历史记录，整体豁免口径漂移检查。
+ * docs/quality-report-*.md 是评审报告：它会**引用**其他项目的错误口径
+ * （例如「某 README 声称按 16 铁律适配」）与占位符状态作为证据，
+ * 这些引用不是本仓的口径漂移，因此整体豁免。
+ */
+const DRIFT_EXEMPT_FILES = new Set([
+  "CHANGELOG.md",
+  "docs\\quality-report-2026-09-27.md",
+  "docs/quality-report-2026-09-27.md",
+]);
+
+/** 是否为评审报告这类「引用错误示例」的分析文档 */
+function isExemptFromProductChecks(rel: string): boolean {
+  return rel.startsWith("docs\\quality-report-") || rel.startsWith("docs/quality-report-");
+}
 
 export function checkScaleDrift(root: string): Issue[] {
   const issues: Issue[] = [];
@@ -226,6 +240,10 @@ const PLACEHOLDER_PATTERN = /yourname|your-project|your_project|FIXME|(?<!\[)\bT
 const PLACEHOLDER_EXEMPT = (rel: string) =>
   rel.startsWith(`templates${path.sep}`) ||
   rel.startsWith(`examples${path.sep}`) ||
+  // 评审报告会引用其他项目的 TODO 占位符状态作为证据（如「界面截图仍为 TODO 占位」），
+  // 这是在描述事实而非本仓留下未替换的占位符
+  rel.startsWith("docs/quality-report-") ||
+  rel.startsWith(`docs${path.sep}quality-report-`) ||
   rel.startsWith(`docs${path.sep}superpowers${path.sep}`);
 
 export function checkPlaceholders(root: string): Issue[] {
