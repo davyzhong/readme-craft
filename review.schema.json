@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/davyzhong/readme-craft/review.schema.json",
+  "title": "readme-craft agent review file",
+  "description": "Agent 对 agent-reviewed 规则的人工评分文件，由 `readme-craft check --review <path>` 合并进检查报告。只能覆盖 agent-reviewed 规则；deterministic 规则的评分由脚本决定。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["reviews"],
+  "properties": {
+    "specVersion": {
+      "type": "string",
+      "minLength": 1,
+      "description": "写该文件时所依据的 rules.yaml 版本。省略时按当前规范版本处理；给出时必须与当前规范版本一致，否则视为不兼容并报错，避免旧评分被静默套用到新锚点。"
+    },
+    "reviews": {
+      "type": "array",
+      "description": "逐条 agent-reviewed 规则的评分或不适用声明。",
+      "items": { "$ref": "#/$defs/reviewItem" }
+    }
+  },
+  "$defs": {
+    "reviewItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T(0[1-9]|1[0-9])$",
+          "description": "规则 ID，使用零填充形式（T02）。散文中的 T2 形式也可被 CLI 接受，但建议统一用零填充。"
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "0-5 分，必须落在该规则 thresholds 的语义内。与 status: na 互斥。"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["na"],
+          "description": "只允许 na，表示该规则不适用于当前项目；其他状态由 score 与 thresholds 推导，不接受手工声明。"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "非空判定理由。评分与 na 都必须给出。"
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "支撑该评分的证据标识，可取 rules.yaml 中该规则的 evidence 取值。"
+        }
+      },
+      "anyOf": [
+        {
+          "required": ["score", "reason"],
+          "not": { "required": ["status"] }
+        },
+        {
+          "required": ["status", "reason"],
+          "properties": { "status": { "const": "na" } }
+        }
+      ]
+    }
+  }
+}

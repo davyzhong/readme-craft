@@ -15886,6 +15886,25 @@ function parseReviewFile(reviewPath, spec) {
     result.errors.push("review \u6587\u4EF6\u7F3A\u5C11 reviews \u5217\u8868");
     return result;
   }
+  const declared = data.specVersion;
+  if (declared !== void 0) {
+    if (typeof declared !== "string" || declared.trim() === "") {
+      result.errors.push("review \u6587\u4EF6\u7684 specVersion \u5FC5\u987B\u662F\u975E\u7A7A\u5B57\u7B26\u4E32");
+      return result;
+    }
+    if (declared !== spec.version) {
+      result.errors.push(
+        `review \u6587\u4EF6\u7684 specVersion ${declared} \u4E0E\u5F53\u524D\u89C4\u8303\u7248\u672C ${spec.version} \u4E0D\u4E00\u81F4\uFF1B\u8BF7\u6309\u5F53\u524D rules.yaml \u7684\u8BC4\u5206\u951A\u70B9\u91CD\u65B0\u8BC4\u5BA1\uFF0C\u6216\u7701\u7565 specVersion \u4EE5\u6309\u5F53\u524D\u7248\u672C\u5904\u7406`
+      );
+      return result;
+    }
+  }
+  const ROOT_KEYS = /* @__PURE__ */ new Set(["specVersion", "reviews"]);
+  for (const key of Object.keys(data)) {
+    if (!ROOT_KEYS.has(key)) {
+      result.errors.push(`review \u6587\u4EF6\u5305\u542B\u672A\u77E5\u5B57\u6BB5\uFF1A${key}\uFF08\u5141\u8BB8\u7684\u5B57\u6BB5\uFF1A${[...ROOT_KEYS].join("\u3001")}\uFF09`);
+    }
+  }
   const ruleById = new Map(spec.rules.map((r) => [r.id, r]));
   const seen = /* @__PURE__ */ new Set();
   for (const item of entries) {
@@ -15894,6 +15913,14 @@ function parseReviewFile(reviewPath, spec) {
       continue;
     }
     const raw = item;
+    const ITEM_KEYS = /* @__PURE__ */ new Set(["id", "score", "status", "reason", "evidence"]);
+    for (const key of Object.keys(item)) {
+      if (!ITEM_KEYS.has(key)) {
+        result.errors.push(
+          `review \u9879 ${typeof raw.id === "string" ? raw.id : "(\u65E0 id)"} \u5305\u542B\u672A\u77E5\u5B57\u6BB5\uFF1A${key}\uFF08\u5141\u8BB8\u7684\u5B57\u6BB5\uFF1A${[...ITEM_KEYS].join("\u3001")}\uFF09`
+        );
+      }
+    }
     if (typeof raw.id !== "string" || raw.id.trim() === "") {
       result.errors.push("review \u9879\u7F3A\u5C11\u5B57\u7B26\u4E32 id");
       continue;

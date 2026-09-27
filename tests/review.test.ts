@@ -1,9 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { checkProject } from "../scripts/lib/check.ts";
+import { loadSpec } from "../scripts/lib/spec.ts";
+import { fileURLToPath } from "node:url";
+
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function tmpProject(readme: string): string {
   const dir = mkdtempSync(path.join(tmpdir(), "readme-craft-review-"));
@@ -115,4 +119,64 @@ test("full review coverage unlocks the normalized total score in text output", (
   assert.equal(report.unverifiedCount, 0);
   assert.ok(report.text.includes("总分"), JSON.stringify(report.text));
   assert.ok(report.text.includes("/100"));
+});
+
+// ---------- review 文件的 schema / 版本 / 未知字段策略 ----------
+
+test("review file declaring an unsupported specVersion is rejected", () => {
+  const dir = tmpProject("# T\n");
+  const p = writeReview(dir, 'specVersion: "0.0.1"\nreviews: []\n');
+  const report = checkProject(dir, { types: ["cli"], reviewPath: p });
+  assert.ok(
+    report.errors.some((e) => e.includes("specVersion")),
+    `expected a specVersion error, got ${JSON.stringify(report.errors)}`,
+  );
+});
+
+test("review file declaring the current specVersion is accepted", () => {
+  const dir = tmpProject("# T\n");
+  const p = writeReview(
+    dir,
+    `specVersion: "${loadSpec().version}"\nreviews:\n  - id: T02\n    score: 4\n    reason: "价值主张清晰"\n    evidence: ["first paragraph"]\n`,
+  );
+  const report = checkProject(dir, { types: ["cli"], reviewPath: p });
+  assert.deepEqual(report.errors, []);
+  assert.equal(report.rules.find((r) => r.id === "T02")?.score, 4);
+});
+
+test("review file without specVersion stays valid (backward compatible)", () => {
+  const dir = tmpProject("# T\n");
+  const p = writeReview(
+    dir,
+    `reviews:\n  - id: T02\n    score: 4\n    reason: "价值主张清晰"\n`,
+  );
+  const report = checkProject(dir, { types: ["cli"], reviewPath: p });
+  assert.deepEqual(report.errors, []);
+});
+
+test("unknown top-level and per-item keys are rejected and named", () => {
+  const dir = tmpProject("# T\n");
+  const p = writeReview(
+    dir,
+    `specVersion: "${loadSpec().version}"\nextra: 1\nreviews:\n  - id: T02\n    score: 3\n    reason: "ok"\n    confidence: "high"\n`,
+  );
+  const report = checkProject(dir, { types: ["cli"], reviewPath: p });
+  const joined = report.errors.join("\n");
+  assert.match(joined, /extra/, "unknown top-level key should be named");
+  assert.match(joined, /confidence/, "unknown per-item key should be named");
+});
+
+test("review.schema.json exists and describes the contract", () => {
+  const schemaPath = path.join(REPO_ROOT, "review.schema.json");
+  assert.ok(existsSync(schemaPath), "review.schema.json must exist next to rules.schema.json");
+  const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
+  assert.ok(schema.$schema.includes("json-schema.org"));
+  assert.ok(schema.required.includes("reviews"));
+  // specVersion 保持可选以兼容既有文件，但必须在 schema 中被描述
+  assert.ok(
+    typeof schema.properties.specVersion.description === "string" &&
+      schema.properties.specVersion.description.length > 0,
+    "specVersion must be documented even though it stays optional",
+  );
+  assert.equal(schema.additionalProperties, false);
 });

@@ -246,6 +246,31 @@ function parseReviewFile(reviewPath: string, spec: Spec): ParsedReview {
     result.errors.push("review 文件缺少 reviews 列表");
     return result;
   }
+
+  // specVersion：省略按当前版本处理；给出时必须与当前规范一致，避免旧评分被静默套用到新锚点
+  const declared = (data as { specVersion?: unknown }).specVersion;
+  if (declared !== undefined) {
+    if (typeof declared !== "string" || declared.trim() === "") {
+      result.errors.push("review 文件的 specVersion 必须是非空字符串");
+      return result;
+    }
+    if (declared !== spec.version) {
+      result.errors.push(
+        `review 文件的 specVersion ${declared} 与当前规范版本 ${spec.version} 不一致；` +
+          `请按当前 rules.yaml 的评分锚点重新评审，或省略 specVersion 以按当前版本处理`,
+      );
+      return result;
+    }
+  }
+
+  // 未知字段策略：显式拒绝并点名，避免拼写错误被静默忽略导致评分缺失
+  const ROOT_KEYS = new Set(["specVersion", "reviews"]);
+  for (const key of Object.keys(data as Record<string, unknown>)) {
+    if (!ROOT_KEYS.has(key)) {
+      result.errors.push(`review 文件包含未知字段：${key}（允许的字段：${[...ROOT_KEYS].join("、")}）`);
+    }
+  }
+
   const ruleById = new Map(spec.rules.map((r) => [r.id, r]));
   const seen = new Set<string>();
   for (const item of entries as unknown[]) {
@@ -254,6 +279,14 @@ function parseReviewFile(reviewPath: string, spec: Spec): ParsedReview {
       continue;
     }
     const raw = item as Partial<ReviewEntry>;
+    const ITEM_KEYS = new Set(["id", "score", "status", "reason", "evidence"]);
+    for (const key of Object.keys(item as Record<string, unknown>)) {
+      if (!ITEM_KEYS.has(key)) {
+        result.errors.push(
+          `review 项 ${typeof raw.id === "string" ? raw.id : "(无 id)"} 包含未知字段：${key}（允许的字段：${[...ITEM_KEYS].join("、")}）`,
+        );
+      }
+    }
     if (typeof raw.id !== "string" || raw.id.trim() === "") {
       result.errors.push("review 项缺少字符串 id");
       continue;

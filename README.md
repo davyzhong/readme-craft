@@ -124,6 +124,22 @@ pnpm run build     # 构建独立 CLI bundle dist/readme-craft.mjs（内嵌规�
 
 `check` 的对外报告只展示归一化百分制 + 适用项数 + 未核验项数；agent-reviewed 规则默认 `unverified`，可用 `--review <yaml>` 合并 Agent 评分后再输出总分。退出码：`0` 成功、`1` 规则/一致性失败、`2` 参数/环境错误。
 
+**Agent review 文件契约**：格式由 [`review.schema.json`](./review.schema.json) 定义（编辑器可自动补全）。要点：
+
+```yaml
+specVersion: 3.0.0-alpha.0   # 可选；给出时必须与当前 rules.yaml 版本一致，否则报错
+reviews:
+  - id: T02                  # 只能覆盖 agent-reviewed 规则
+    score: 4                 # 0-5 整数；与 status: na 互斥
+    reason: 首句覆盖做什么、给谁用、独特优势
+    evidence: [value-proposition]
+  - id: T11
+    status: na               # 不适用，必须给非空 reason
+    reason: 该项目无对外客户引用场景
+```
+
+未知字段会被显式拒绝并点名（含拼写错误），避免评分被静默丢弃；确定性规则的评分不能由 review 覆盖。
+
 ### 检测边界：确定性分数不等于语义质量
 
 所有 `deterministic` 规则都基于**结构面**的静态特征（数量、命名、存在性、格式），因此报告会在
