@@ -42,7 +42,7 @@ readme-craft 是一套 README 方法论、规则引擎与工具链。核心目�
 
 ## 当前阶段
 
-当前版本：v3.0.0-alpha.0。GitHub 公开仓库、Action v1、Pages 评分页和 `npx github:` 路径已交付。npm registry 尚未发布；启用前须复核 tag/version 与预发布 channel 防护。历史开发仓库已独立设为私有只读归档。
+当前版本：v3.0.0-alpha.0，项目处于维护冻结。GitHub 公开仓库、Action v1、Pages 评分页和 `npx github:` 路径已交付。npm registry 尚未发布；发布 workflow 已加固 tag/version 一致性、预发布 `next` 通道和发布前门禁。历史开发仓库已独立设为私有只读归档。
 
 ## 计划索引
 

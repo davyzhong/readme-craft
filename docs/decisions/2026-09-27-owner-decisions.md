@@ -1,7 +1,7 @@
 ---
 title: 已决事项与风险接受记录
 date: 2026-09-27
-status: active
+status: completed
 scope: owner decisions that close open gates or accept known risk
 ---
 
@@ -80,11 +80,12 @@ P0 发布门槛与历史门槛已分别由 D-001、D-002 关闭。
 
 ---
 
-## 仍开放但不阻塞的事项
+## 冻结后维护积压（不阻塞冻结）
 
-以下事项已被 review 记录为有限 backlog，不阻塞冻结，按需处理：
+以下事项最初列为有限 backlog；截至 2026-09-27 的后续提交已完成前三项和项目类型边界文档化。未完成的长期评估仍不阻塞冻结：
 
-- 启发式规则的检测边界需要更明确地暴露给用户（避免把确定性检测包装为语义保证）。
-- `review` YAML 缺正式 JSON Schema 与版本字段。
-- 缺少 Action 的端到端消费者仓库演练。
-- 六类项目类型对 monorepo / SDK / 多语言仓库的分类边界需要文档化。
+- ✅ 在规则及 CLI/Web 报告中披露确定性启发式检测边界（`5b5005a`）。
+- ✅ 提供 `review.schema.json`、`specVersion` 校验和未知字段拒绝（`0bd8f9e`）。
+- ✅ 增加消费者视角 Action 演练脚本与集成 recipe（`46f0726`）。
+- ✅ 文档化六类类型、自动探测边界与显式纠正方法（`docs/project-types.md`，`46f0726`）。
+- ⏳ 有真实采用数据后再评估跨 Agent/评分者一致性；当前没有公开实证基准，不虚构效果数据。

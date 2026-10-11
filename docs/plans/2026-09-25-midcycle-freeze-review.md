@@ -55,7 +55,7 @@ Validation: `pnpm validate`; `pnpm test` (147/147); `pnpm typecheck`; `pnpm web:
 
 Review deliverables: [`docs/archive/2026-09-25-review.md`](../archive/2026-09-25-review.md), [`docs/archive/project-history.md`](../archive/project-history.md), [`docs/archive/README.md`](../archive/README.md), [`docs/archive/mid-cycle-freeze-standard.md`](../archive/mid-cycle-freeze-standard.md). Private source inventory and accessible commit snapshot are in ignored `.local/archive/`.
 
-The review is complete; project sealing is not. Two owner decisions remain: whether to harden/retain the unpublished npm workflow and how to handle the already-public Git history and license attribution. No workflow, publication, deletion, or history rewrite was performed. Do not mark the repository archived until the owner decision and risk acceptance are recorded.
+审查与归档准备计划已完成。Owner 于 2026-09-27 关闭两项原始门槛：npm workflow 已加固（D-001），公开历史与许可证归属按原样保留并接受已记录的风险（D-002）；D-003 确认项目进入维护冻结。后续提交 `5b5005a`、`0bd8f9e` 和 `46f0726` 完成了原列四项 P2 工作（启发式检测边界披露、review schema/版本校验、Action 演练、项目类型边界文档）。独立的跨项目 README 质量报告是冻结后的方法应用记录，不扩展产品范围。剩余维护事项见 owner 决策台账和审查报告。
 
 **Resolution (2026-09-27):** both owner decisions are recorded in
 [`docs/decisions/2026-09-27-owner-decisions.md`](../decisions/2026-09-27-owner-decisions.md).

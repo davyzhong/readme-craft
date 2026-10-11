@@ -9,6 +9,7 @@
 | v2.3.x | 加强自检、视觉与项目类型适配；形成公开演示与版本化方法论。 | Git tag 与 `CHANGELOG.md` |
 | v3.0 alpha | 将规则集中为 `rules.yaml`，提供确定性 CLI、Agent review 合并、Skill 安装器、GitHub Action、本地 Web 评分页和批量审计；固定公开报告口径。 | `package.json`、`scripts/`、`action.yml`、`web/`、`README.md` |
 | 2026-09 | 公开发布与私有开发资料分离；进行中期冻结审查，纠正过期声明，补安全边界并建立公开/私有知识归档。 | [`2026-09-25 review`](2026-09-25-review.md)、[`authoritative plan`](../plans/2026-09-25-midcycle-freeze-review.md) |
+| 2026-09-27 | Owner 关闭 npm 发布防护与历史披露决策门槛，确认维护冻结；补充检测边界披露、review schema、Action 演练和项目类型边界。之后另有一轮跨项目 README 应用工作。 | [`owner decisions`](../decisions/2026-09-27-owner-decisions.md)、`5b5005a`、`0bd8f9e`、`46f0726` |
 
 ## 演进原则
 
