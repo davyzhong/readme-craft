@@ -15684,9 +15684,15 @@ var init_validate = __esm({
     DRIFT_PATTERN = /16 条铁律|17 条铁律|18 条铁律|80 分|85 分|90 分/;
     HISTORY_LINE = /历史|演进/;
     HISTORY_HEADING = /历史|演进|升级摘要/;
-    DRIFT_EXEMPT_FILES = /* @__PURE__ */ new Set(["CHANGELOG.md"]);
+    DRIFT_EXEMPT_FILES = /* @__PURE__ */ new Set([
+      "CHANGELOG.md",
+      "docs\\quality-report-2026-09-27.md",
+      "docs/quality-report-2026-09-27.md"
+    ]);
     PLACEHOLDER_PATTERN = /yourname|your-project|your_project|FIXME|(?<!\[)\bTODO\b/;
-    PLACEHOLDER_EXEMPT = (rel) => rel.startsWith(`templates${path4.sep}`) || rel.startsWith(`examples${path4.sep}`) || rel.startsWith(`docs${path4.sep}superpowers${path4.sep}`);
+    PLACEHOLDER_EXEMPT = (rel) => rel.startsWith(`templates${path4.sep}`) || rel.startsWith(`examples${path4.sep}`) || // 评审报告会引用其他项目的 TODO 占位符状态作为证据（如「界面截图仍为 TODO 占位」），
+    // 这是在描述事实而非本仓留下未替换的占位符
+    rel.startsWith("docs/quality-report-") || rel.startsWith(`docs${path4.sep}quality-report-`) || rel.startsWith(`docs${path4.sep}superpowers${path4.sep}`);
   }
 });
 
